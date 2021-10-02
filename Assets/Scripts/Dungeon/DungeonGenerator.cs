@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField] DungeonPrefabs dungeonPrefabs;
+    [SerializeField] AutoMapping autoMapping;
 
     const int WIDTH = 36;
     const int HEIGHT = 20;
@@ -41,6 +42,22 @@ public class DungeonGenerator : MonoBehaviour
         var sprH = spr.bounds.size.y;
 
         return max.y - (sprH * j) - sprH / 2;
+    }
+
+    public int GetGridX(float x)
+    {
+        Vector2 min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
+        var spr = dungeonPrefabs.Wall.GetComponent<SpriteRenderer>();
+        var sprW = spr.bounds.size.x;
+        return Mathf.RoundToInt((-min.x + x - sprW / 2) / sprW);
+    }
+
+    public int GetGridY(float y)
+    {
+        Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
+        var spr = dungeonPrefabs.Wall.GetComponent<SpriteRenderer>();
+        var sprH = spr.bounds.size.y;
+        return Mathf.RoundToInt(-(-max.y + y + sprH / 2) / sprH);
     }
 
 
@@ -85,6 +102,8 @@ public class DungeonGenerator : MonoBehaviour
 
     void InstantiateDungeon()
     {
+        autoMapping.Reset(mapData2D.Width, mapData2D.Height);
+
         // タイルを配置
         for (int j = 0; j < mapData2D.Height; j++)
         {
@@ -104,7 +123,7 @@ public class DungeonGenerator : MonoBehaviour
                     float y = GetChipY(j);
                     Instantiate(dungeonPrefabs.Road, new Vector3(x, y), Quaternion.identity);
                 }
-
+                autoMapping.Mapping(i, j, mapData2D.Get(i, j) + 1);
             }
         }
     }
