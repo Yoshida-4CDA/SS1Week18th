@@ -176,7 +176,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 23
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -200,7 +200,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1067724649}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9, y: 9, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -249,3 +249,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f4b13a6f5aa3405ca31f750f13dccde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dungeonPrefabs:
+    Wall: {fileID: 804736688614092186, guid: 3e10a86888f4d4f05afb97ed75dde31a, type: 3}
+    Road: {fileID: 804736688614092186, guid: 3d1b0c250b3a74f66a5ca937a831a773, type: 3}
