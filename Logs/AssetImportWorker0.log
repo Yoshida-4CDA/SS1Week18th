@@ -188,3 +188,4 @@ Received Import Request.
 Start importing Assets/Images/Load.png using Guid(7f3529c7a63264df9a4fc55096a05472) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ccd3b0426ecfb0cdef46eaa3ca0b20c5') in 0.024037 seconds 
   Import took 0.031073 seconds .
 
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file

@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ShimazuTest.unity
     guid: 4e12d2344edfc44e4925c478cfbda66e
+  - enabled: 1
+    path: Assets/Scenes/YoshidaTest.unity
+    guid: 15fca3030462937449b53424a964178c
   m_configObjects: {}
