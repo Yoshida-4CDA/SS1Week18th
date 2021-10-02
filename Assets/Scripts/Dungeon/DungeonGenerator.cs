@@ -3,70 +3,41 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
-/// <summary>
-/// ダンジョンの自動生成モジュール
-/// </summary>
-public class DgGenerator : MonoBehaviour
+// ダンジョンの自動生成モジュール
+public class DungeonGenerator : MonoBehaviour
 {
-    /// <summary>
-    /// マップ全体の幅
-    /// </summary>
-    const int WIDTH = 60;
-    /// <summary>
-    /// マップ全体の高さ
-    /// </summary>
-    const int HEIGHT = 40;
+    [SerializeField] DungeonPrefabs dungeonPrefabs;
 
-    /// <summary>
-    /// 区画と部屋の余白サイズ
-    /// </summary>
-    const int OUTER_MERGIN = 3;
-    /// <summary>
-    /// 部屋配置の余白サイズ
-    /// </summary>
-    const int POS_MERGIN = 2;
-    /// <summary>
-    /// 最小の部屋サイズ
-    /// </summary>
-    const int MIN_ROOM = 4;
-    /// <summary>
-    /// 最大の部屋サイズ
-    /// </summary>
-    const int MAX_ROOM = 10;
+    const int WIDTH = 36;
+    const int HEIGHT = 20;
 
-    /// <summary>
-    /// 通路
-    /// </summary>
-    const int CHIP_NONE = 0;
-    /// <summary>
-    /// 壁
-    /// </summary>
-    const int CHIP_WALL = 1;
+    const int OUTER_MERGIN = 3;  // 区画と部屋の余白サイズ
+    const int POS_MERGIN = 2;    // 部屋配置の余白サイズ
 
-    /// <summary>
-    /// 2次元配列情報
-    /// </summary>
-    Layer2D _layer = null;
-    /// <summary>
-    /// 区画リスト
-    /// </summary>
-    List<DgDivision> _divList = null;
+    const int MIN_ROOM = 3;     // 最小の部屋サイズ    
+    const int MAX_ROOM = 10;    // 最大の部屋サイズ
 
-    /// チップ上のX座標を取得する.
+    const int CHIP_ROAD = 0;    // 通路
+    const int CHIP_WALL = 1;    // 壁
+
+    DungeonMapData2D mapData2D = null;      // 2次元配列情報
+
+    List<DungeonDivision> divisionList = null;   // 区画リスト
+
+    /// チップ上のX座標を取得する:整数値のデータを配置する座標に変換する
     float GetChipX(int i)
     {
         Vector2 min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
-        var spr = Util.GetSprite("Wall", "");
+        var spr = dungeonPrefabs.Wall.GetComponent<SpriteRenderer>();
         var sprW = spr.bounds.size.x;
 
         return min.x + (sprW * i) + sprW / 2;
     }
 
-    /// チップ上のy座標を取得する.
     float GetChipY(int j)
     {
         Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
-        var spr = Util.GetSprite("Wall", "");
+        var spr = dungeonPrefabs.Wall.GetComponent<SpriteRenderer>();
         var sprH = spr.bounds.size.y;
 
         return max.y - (sprH * j) - sprH / 2;
@@ -77,13 +48,13 @@ public class DgGenerator : MonoBehaviour
     {
         // ■1. 初期化
         // 2次元配列初期化
-        _layer = new Layer2D(WIDTH, HEIGHT);
+        mapData2D = new DungeonMapData2D(WIDTH, HEIGHT);
 
         // 区画リスト作成
-        _divList = new List<DgDivision>();
+        divisionList = new List<DungeonDivision>();
 
         // ■2. すべてを壁にする
-        _layer.Fill(CHIP_WALL);
+        mapData2D.Fill(CHIP_WALL);
 
         // ■3. 最初の区画を作る
         CreateDivision(0, 0, WIDTH - 1, HEIGHT - 1);
@@ -98,57 +69,64 @@ public class DgGenerator : MonoBehaviour
 
         // ■6. 部屋同士をつなぐ
         ConnectRooms();
+        // Dump();
+        InstantiateDungeon();
+    }
 
-        // デバッグ出力
-        //foreach (var div in _divList)
-        //{
-        //    div.Dump();
-        //}
-        //_layer.Dump();
-
-        // タイルを配置
-        for (int j = 0; j < _layer.Height; j++)
+    // デバッグ出力
+    void Dump()
+    {
+        foreach (var div in divisionList)
         {
-            for (int i = 0; i < _layer.Width; i++)
+            div.Dump();
+        }
+        mapData2D.Dump();
+    }
+
+    void InstantiateDungeon()
+    {
+        // タイルを配置
+        for (int j = 0; j < mapData2D.Height; j++)
+        {
+            for (int i = 0; i < mapData2D.Width; i++)
             {
-                if (_layer.Get(i, j) == CHIP_WALL)
+                if (mapData2D.Get(i, j) == CHIP_WALL)
                 {
                     // 壁生成
                     float x = GetChipX(i);
                     float y = GetChipY(j);
-                    Util.CreateToken(x, y, "Wall", "", "Wall");
+                    Instantiate(dungeonPrefabs.Wall, new Vector3(x, y), Quaternion.identity);
                 }
+                else if (mapData2D.Get(i, j) == CHIP_ROAD)
+                {
+                    // 壁生成
+                    float x = GetChipX(i);
+                    float y = GetChipY(j);
+                    Instantiate(dungeonPrefabs.Road, new Vector3(x, y), Quaternion.identity);
+                }
+
             }
         }
-
     }
 
-    /// <summary>
-    /// 最初の区画を作る
-    /// </summary>
-    /// <param name="left">左</param>
-    /// <param name="top">上</param>
-    /// <param name="right">右</param>
-    /// <param name="bottom">下</param>
+    // 最初の区画を作る
     void CreateDivision(int left, int top, int right, int bottom)
     {
-        DgDivision div = new DgDivision();
-        div.Outer.Set(left, top, right, bottom);
-        _divList.Add(div);
+        DungeonDivision div = new DungeonDivision();
+        div.Outer.Set(left, top, right, bottom); // 外周を設定?
+        divisionList.Add(div); // 作った矩形波リストに追加
     }
 
-    /// <summary>
-    /// 区画を分割する
-    /// </summary>
-    /// <param name="bVertical">垂直分割するかどうか</param>
+    // 区画を分割する
+    // bVertical:垂直分割するかどうか
     void SplitDivison(bool bVertical)
     {
         // 末尾の要素を取り出し
-        DgDivision parent = _divList[_divList.Count - 1];
-        _divList.Remove(parent);
+        DungeonDivision parent = divisionList[divisionList.Count - 1];
+        divisionList.Remove(parent);
 
         // 子となる区画を生成
-        DgDivision child = new DgDivision();
+        DungeonDivision child = new DungeonDivision();
 
         if (bVertical)
         {
@@ -157,7 +135,7 @@ public class DgGenerator : MonoBehaviour
             {
                 // 縦の高さが足りない
                 // 親区画を戻しておしまい
-                _divList.Add(parent);
+                divisionList.Add(parent);
                 return;
             }
 
@@ -186,7 +164,7 @@ public class DgGenerator : MonoBehaviour
             {
                 // 横幅が足りない
                 // 親区画を戻しておしまい
-                _divList.Add(parent);
+                divisionList.Add(parent);
                 return;
             }
 
@@ -213,25 +191,21 @@ public class DgGenerator : MonoBehaviour
         if (Random.Range(0, 2) == 0)
         {
             // 子を分割する
-            _divList.Add(parent);
-            _divList.Add(child);
+            divisionList.Add(parent);
+            divisionList.Add(child);
         }
         else
         {
             // 親を分割する
-            _divList.Add(child);
-            _divList.Add(parent);
+            divisionList.Add(child);
+            divisionList.Add(parent);
         }
 
         // 分割処理を再帰呼び出し (分割方向は縦横交互にする)
         SplitDivison(!bVertical);
     }
 
-    /// <summary>
-    /// 指定のサイズを持つ区画を分割できるかどうか
-    /// </summary>
-    /// <param name="size">チェックする区画のサイズ</param>
-    /// <returns>分割できればtrue</returns>
+    // 指定のサイズを持つ区画を分割できるかどうか
     bool CheckDivisionSize(int size)
     {
         // (最小の部屋サイズ + 余白)
@@ -242,12 +216,10 @@ public class DgGenerator : MonoBehaviour
         return size >= min;
     }
 
-    /// <summary>
-    /// 区画に部屋を作る
-    /// </summary>
+    // 区画に部屋を作る
     void CreateRoom()
     {
-        foreach (DgDivision div in _divList)
+        foreach (DungeonDivision div in divisionList)
         {
             // 基準サイズを決める
             int dw = div.Outer.Width - OUTER_MERGIN;
@@ -282,33 +254,28 @@ public class DgGenerator : MonoBehaviour
         }
     }
 
-    /// <summary>
-	/// DgRectの範囲を塗りつぶす
-    /// </summary>
-    /// <param name="rect">矩形情報</param>
-    void FillDgRect(DgDivision.DgRect r)
+	// DgRectの範囲を塗りつぶす
+    void FillDgRect(DungeonRect r)
     {
-        _layer.FillRectLTRB(r.Left, r.Top, r.Right, r.Bottom, CHIP_NONE);
+        mapData2D.FillRectLTRB(r.Left, r.Top, r.Right, r.Bottom, CHIP_ROAD);
     }
 
-    /// <summary>
-    /// 部屋同士を通路でつなぐ
-    /// </summary>
+    // 部屋同士を通路でつなぐ
     void ConnectRooms()
     {
-        for (int i = 0; i < _divList.Count - 1; i++)
+        for (int i = 0; i < divisionList.Count - 1; i++)
         {
             // リストの前後の区画は必ず接続できる
-            DgDivision a = _divList[i];
-            DgDivision b = _divList[i + 1];
+            DungeonDivision a = divisionList[i];
+            DungeonDivision b = divisionList[i + 1];
 
             // 2つの部屋をつなぐ通路を作成
             CreateRoad(a, b);
 
             // 孫にも接続する
-            for (int j = i + 2; j < _divList.Count; j++)
+            for (int j = i + 2; j < divisionList.Count; j++)
             {
-                DgDivision c = _divList[j];
+                DungeonDivision c = divisionList[j];
                 if (CreateRoad(a, c, true))
                 {
                     // 孫に接続できたらおしまい
@@ -318,14 +285,8 @@ public class DgGenerator : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 指定した部屋の間を通路でつなぐ
-    /// </summary>
-    /// <param name="divA">部屋1</param>
-    /// <param name="divB">部屋2</param>
-	/// <param name="bGrandChild">孫チェックするかどうか</param>
-    /// <returns>つなぐことができたらtrue</returns>
-	bool CreateRoad(DgDivision divA, DgDivision divB, bool bGrandChild = false)
+    // 指定した部屋の間を通路でつなぐ
+	bool CreateRoad(DungeonDivision divA, DungeonDivision divB, bool bGrandChild = false)
     {
         if (divA.Outer.Bottom == divB.Outer.Top || divA.Outer.Top == divB.Outer.Bottom)
         {
@@ -413,12 +374,7 @@ public class DgGenerator : MonoBehaviour
         return false;
     }
 
-    /// <summary>
     /// 水平方向に線を引く (左と右の位置は自動で反転する)
-    /// </summary>
-    /// <param name="left">左</param>
-    /// <param name="right">右</param>
-    /// <param name="y">Y座標</param>
     void FillHLine(int left, int right, int y)
     {
         if (left > right)
@@ -428,15 +384,10 @@ public class DgGenerator : MonoBehaviour
             left = right;
             right = tmp;
         }
-        _layer.FillRectLTRB(left, y, right + 1, y + 1, CHIP_NONE);
+        mapData2D.FillRectLTRB(left, y, right + 1, y + 1, CHIP_ROAD);
     }
 
-    /// <summary>
     /// 垂直方向に線を引く (上と下の位置は自動で反転する)
-    /// </summary>
-    /// <param name="top">上</param>
-    /// <param name="bottom">下</param>
-    /// <param name="x">X座標</param>
     void FillVLine(int top, int bottom, int x)
     {
         if (top > bottom)
@@ -446,14 +397,22 @@ public class DgGenerator : MonoBehaviour
             top = bottom;
             bottom = tmp;
         }
-        _layer.FillRectLTRB(x, top, x + 1, bottom + 1, CHIP_NONE);
+        mapData2D.FillRectLTRB(x, top, x + 1, bottom + 1, CHIP_ROAD);
     }
 
     void OnGUI()
-    {// 9
+    {
         if (GUI.Button(new Rect(160, 160, 128, 32), "もう１回"))
         {
-            SceneManager.LoadScene("ShimazuTest");
+            string currentScene = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(currentScene);
         }
     }
+}
+
+[System.Serializable]
+public class DungeonPrefabs
+{
+    public GameObject Wall;
+    public GameObject Road;
 }
