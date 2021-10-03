@@ -17,42 +17,20 @@ public class AutoMapping : MonoBehaviour
     public GameObject enemyImage;
     public GameObject itemImage;
 
-    public ObjectPosition player;
     public GameObject playerImage;
 
     [SerializeField] DungeonGenerator dungeonGenerator;
 
     // メソッドを追加
-    void Update()
+    public void HandleUpdate(ObjectPosition player)
     {
-        Vector2Int p = ShowPlayerObject();
-        // Mapping(p.x, p.y, dungeonGenerator.MapData2D.Get(p.x, p.y) + 1);
-
-
-        // ShowObjects(enemyImage, enemies, enemiesObj);
-        // ShowObjects(itemImage, items, itemsObj);
-
-        ObjectPosition room = dungeonGenerator.GetInRoom(p.x, p.y);
-        if (room == null)
-        {
-            Mapping(p.x, p.y, dungeonGenerator.MapData2D.Get(p.x, p.y) + 1);
-        }
-        else
-        {
-            Debug.Log($"{room.gameObject.name}:{room.RoomGrind}");
-            Mapping(room);
-        }
         ShowObjects(enemyImage, enemies, enemiesObj);
+        ShowPlayerObject(player);
     }
 
-    private Vector2Int ShowPlayerObject()
+    private Vector2Int ShowPlayerObject(ObjectPosition player)
     {
         Vector2Int p = player.Grid;
-
-            //new Vector2Int(
-            //    dungeonGenerator.GetGridX(player.transform.position.x),
-            //    dungeonGenerator.GetGridY(player.transform.position.y));
-
         playerImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(pw * p.x, ph * -p.y);
         return p;
     }
@@ -65,13 +43,10 @@ public class AutoMapping : MonoBehaviour
             Destroy(imgs.transform.GetChild(i).gameObject);
         for (int i = 0; i < objs.transform.childCount; i++)
         {
-            // Pos2D p = objs.transform.GetChild(i).GetComponent<ObjectPosition>().grid;
-            Vector2Int p = objs.transform.GetChild(i).GetComponent<ObjectPosition>().Grid;
-            //new Vector2Int(
-            //dungeonGenerator.GetGridX(objs.transform.GetChild(i).transform.position.x),
-            //dungeonGenerator.GetGridY(objs.transform.GetChild(i).transform.position.y));
+            Transform child = objs.transform.GetChild(i);
+            Vector2Int p = child.GetComponent<ObjectPosition>().Grid;
             Transform img = imgs.transform.GetChild(i);
-            if (map.Get(p.x, p.y) == 1)
+            if (map.Get(p.x, p.y) == 1 && child.gameObject.activeSelf)
             {
                 img.GetComponent<RectTransform>().anchoredPosition = new Vector2(pw * p.x, ph * -p.y);
                 img.gameObject.SetActive(true);
@@ -99,7 +74,6 @@ public class AutoMapping : MonoBehaviour
         {
             return;
         }
-        Debug.Log(value);
         map.Set(x, y, value);
         if (value == 1)
         {

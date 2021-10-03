@@ -25,8 +25,8 @@ public class Enemy : MonoBehaviour
         boxCollider2D = GetComponent<BoxCollider2D>();
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
 
-        hpText.text = $"HP：{enemyHp}";
-        atText.text = $"AT：{enemyAt}";
+        // hpText.text = $"HP：{enemyHp}";
+        // atText.text = $"AT：{enemyAt}";
     }
 
     public void MoveEnemy()
@@ -139,15 +139,15 @@ public class Enemy : MonoBehaviour
     public void EnemyDamage(int damage)
     {
         enemyHp -= damage;
-        hpText.text = $"HP：{enemyHp}";
+        // hpText.text = $"HP：{enemyHp}";
 
         if (enemyHp <= 0)
         {
             Debug.Log("Enemyを倒した");
             GameManager.instance.DestroyEnemyToList(this);
             gameObject.SetActive(false);
-            hpText.text = "";
-            atText.text = "";
+            // hpText.text = "";
+            // atText.text = "";
         }
     }
 }
