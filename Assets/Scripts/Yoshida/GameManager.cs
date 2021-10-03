@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public bool playerTurn = true;
     public bool enemyTurn = false;
 
-    Enemy enemy;
+    List<Enemy> enemies;    // Enemyを管理するリスト
 
     void Awake()
     {
@@ -23,7 +23,12 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<Enemy>();
+        enemies = new List<Enemy>();
+    }
+
+    void Start()
+    {
+        enemies.Clear();
     }
 
     void Update()
@@ -35,13 +40,31 @@ public class GameManager : MonoBehaviour
         StartCoroutine(MoveEnemies());
     }
 
+    public void AddEnemy(Enemy enemy)
+    {
+        enemies.Add(enemy);
+    }
+
+    public void DestroyEnemyToList(Enemy enemy)
+    {
+        enemies.Remove(enemy);
+    }
+
     IEnumerator MoveEnemies()
     {
         enemyTurn = true;
         yield return new WaitForSeconds(0.1f);
 
-        enemy.MoveEnemy();
-        yield return new WaitForSeconds(0.1f);
+        if (enemies.Count == 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            enemies[i].MoveEnemy();
+            yield return new WaitForSeconds(0.1f);
+        }
 
         enemyTurn = false;
         playerTurn = true;

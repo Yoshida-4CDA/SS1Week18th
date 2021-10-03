@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -10,55 +11,61 @@ public class Enemy : MonoBehaviour
     BoxCollider2D boxCollider2D;
     [SerializeField] LayerMask blockingLayer;
     Transform target;       // プレイヤー(target)の座標
-    bool skipMove;          // 敵のターンをスキップさせる変数
+    // bool skipMove;          // 敵のターンをスキップさせる変数
+
+    [Header("EnemyのHP")]
+    [SerializeField] int enemyHp;
+    [Header("HPテキスト")]
+    [SerializeField] Text hpText;
+    [Header("EnemyのAT")]
+    [SerializeField] int enemyAt;
+    [Header("ATテキスト")]
+    [SerializeField] Text atText;
 
     void Start()
     {
+        GameManager.instance.AddEnemy(this);
+
         boxCollider2D = GetComponent<BoxCollider2D>();
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
+
+        hpText.text = $"HP：{enemyHp}";
+        atText.text = $"AT：{enemyAt}";
     }
 
     public void MoveEnemy()
     {
-        if (!skipMove)
-        {
-            skipMove = true;    // 次のターンは動けないようにする
-            int xDir = 0;
-            int yDir = 0;
+        int xDir = 0;
+        int yDir = 0;
 
-            // Playerと同じx軸にいるかどうかを判定
-            if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon)
+        // Playerと同じx軸にいるかどうかを判定
+        if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon)
+        {
+            // y軸を動かす(PlayerがEnemyより高い位置にいるなら上/低い位置にいるなら下に移動する)
+            if (target.transform.position.y > transform.position.y)
             {
-                // y軸を動かす(PlayerがEnemyより高い位置にいるなら上/低い位置にいるなら下に移動する)
-                if (target.transform.position.y > transform.position.y)
-                {
-                    yDir = 1;
-                }
-                else if (target.transform.position.y < transform.position.y)
-                {
-                    yDir = -1;
-                }
+                yDir = 1;
             }
             else
             {
-                // x軸を動かす(PlayerがEnemyより高い位置にいるなら右/低い位置にいるなら左に移動する)
-                if (target.transform.position.x > transform.position.x)
-                {
-                    xDir = 1;
-                    transform.localScale = new Vector3(-1, 1, 1);
-                }
-                else if (target.transform.position.x < transform.position.x)
-                {
-                    xDir = -1;
-                    transform.localScale = new Vector3(1, 1, 1);
-                }
+                yDir = -1;
             }
-            ATMove(xDir, yDir);
         }
         else
         {
-            skipMove = false;   // 次のターンは動けるようにする
+            // x軸を動かす(PlayerがEnemyより高い位置にいるなら右/低い位置にいるなら左に移動する)
+            if (target.transform.position.x > transform.position.x)
+            {
+                xDir = 1;
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+            else
+            {
+                xDir = -1;
+                transform.localScale = new Vector3(1, 1, 1);
+            }
         }
+        ATMove(xDir, yDir);
     }
 
     public void ATMove(int x, int y)
@@ -72,6 +79,13 @@ public class Enemy : MonoBehaviour
         if (hit.transform == null)
         {
             return;
+        }
+
+        Player hitComponent = hit.transform.GetComponent<Player>();
+
+        if (!canMove && hitComponent != null)
+        {
+            OnCantMove(hitComponent);
         }
     }
 
@@ -119,4 +133,66 @@ public class Enemy : MonoBehaviour
 
         isMoving = false;
     }
+
+    void OnCantMove(Player player)
+    {
+        Debug.Log("Enemyの攻撃");
+        player.PlayerDamage(enemyAt);
+    }
+
+    public void EnemyDamage(int damage)
+    {
+        enemyHp -= damage;
+        hpText.text = $"HP：{enemyHp}";
+
+        if (enemyHp <= 0)
+        {
+            Debug.Log("Enemyを倒した");
+            GameManager.instance.DestroyEnemyToList(this);
+            gameObject.SetActive(false);
+            hpText.text = "";
+            atText.text = "";
+        }
+    }
 }
+/*
+         if (!skipMove)
+        {
+            skipMove = true;    // 次のターンは動けないようにする
+            int xDir = 0;
+            int yDir = 0;
+
+            // Playerと同じx軸にいるかどうかを判定
+            if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon)
+            {
+                // y軸を動かす(PlayerがEnemyより高い位置にいるなら上/低い位置にいるなら下に移動する)
+                if (target.transform.position.y > transform.position.y)
+                {
+                    yDir = 1;
+                }
+                else
+                {
+                    yDir = -1;
+                }
+            }
+            else
+            {
+                // x軸を動かす(PlayerがEnemyより高い位置にいるなら右/低い位置にいるなら左に移動する)
+                if (target.transform.position.x > transform.position.x)
+                {
+                    xDir = 1;
+                    transform.localScale = new Vector3(-1, 1, 1);
+                }
+                else
+                {
+                    xDir = -1;
+                    transform.localScale = new Vector3(1, 1, 1);
+                }
+            }
+            ATMove(xDir, yDir);
+        }
+        else
+        {
+            skipMove = false;   // 次のターンは動けるようにする
+        }
+*/
