@@ -238,10 +238,10 @@ RectTransform:
   m_Father: {fileID: 556750906}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 450, y: -76.5}
+  m_SizeDelta: {x: 200, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &110445411
 CanvasRenderer:
@@ -523,10 +523,10 @@ RectTransform:
   m_Father: {fileID: 556750906}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 716.6, y: -76.5}
+  m_SizeDelta: {x: 200, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &212124728
 CanvasRenderer:
@@ -641,7 +641,6 @@ MonoBehaviour:
   itemsObj: {fileID: 0}
   enemyImage: {fileID: 836120643629129485, guid: ffa2426344e57400c8a0e4451a461f0e, type: 3}
   itemImage: {fileID: 0}
-  player: {fileID: 1141054099}
   playerImage: {fileID: 376565065}
   dungeonGenerator: {fileID: 5335274479140745614}
 --- !u!224 &259755737 stripped
@@ -1019,7 +1018,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &478722356
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1366,10 +1365,10 @@ RectTransform:
   m_Father: {fileID: 556750906}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 183.4, y: -76.5}
+  m_SizeDelta: {x: 200, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &711020006
 CanvasRenderer:
@@ -1890,7 +1889,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1039015030
 Transform:
   m_ObjectHideFlags: 0
@@ -2133,7 +2132,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1141054099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3061,6 +3060,53 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1718191767
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1718191769}
+  - component: {fileID: 1718191768}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1718191768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718191767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e975affa79deaf4691941b219532552, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTurn: 1
+  enemyTurn: 0
+  initPlayerHp: 0
+  itemPoint: 0
+--- !u!4 &1718191769
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718191767}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1883348407
 GameObject:
   m_ObjectHideFlags: 0
@@ -3599,8 +3645,11 @@ MonoBehaviour:
     Wall: {fileID: 804736688614092186, guid: 3e10a86888f4d4f05afb97ed75dde31a, type: 3}
     Road: {fileID: 804736688614092186, guid: 3d1b0c250b3a74f66a5ca937a831a773, type: 3}
     Room: {fileID: 3169254528949517666, guid: 3fb3c54fe262a4f4c863eacafcf5a777, type: 3}
+    Player: {fileID: 5084758367499796447, guid: cf74aaea94acb4684b800c0129f160b5, type: 3}
+    Enemy: {fileID: -5682677909539849909, guid: 43e8eb156f2bf4153bf0d395ffa354b2, type: 3}
   autoMapping: {fileID: 253927119}
   rooms: {fileID: 820933772}
+  canvas: {fileID: 8939626812343527859}
 --- !u!4 &5335274479140745615
 Transform:
   m_ObjectHideFlags: 0

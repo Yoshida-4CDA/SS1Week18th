@@ -9,6 +9,9 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField] DungeonPrefabs dungeonPrefabs;
     [SerializeField] AutoMapping autoMapping;
     [SerializeField] Transform rooms;
+    [SerializeField] Transform enemysParent;
+    [SerializeField] Canvas canvas;
+
 
     const int WIDTH = 36;
     const int HEIGHT = 20;
@@ -23,8 +26,12 @@ public class DungeonGenerator : MonoBehaviour
     const int CHIP_WALL = 1;    // 壁
 
     DungeonMapData2D mapData2D = null;      // 2次元配列情報
-
     List<DungeonDivision> divisionList = null;   // 区画リスト
+
+
+    bool spawnedPlayer;
+    ObjectPosition player;
+    List<ObjectPosition> enemys = new List<ObjectPosition>(); 
 
     public DungeonMapData2D MapData2D { get => mapData2D; }
 
@@ -94,6 +101,23 @@ public class DungeonGenerator : MonoBehaviour
         InstantiateDungeon();
     }
 
+
+    // メソッドを追加
+    void Update()
+    {
+
+
+        ObjectPosition room = GetInRoom(player.Grid.x, player.Grid.y);
+        if (room == null)
+        {
+            autoMapping.Mapping(player.Grid.x, player.Grid.y, MapData2D.Get(player.Grid.x, player.Grid.y) + 1);
+        }
+        else
+        {
+            autoMapping.Mapping(room);
+        }
+        autoMapping.HandleUpdate(player);
+    }
 
 
     // デバッグ出力
@@ -281,13 +305,39 @@ public class DungeonGenerator : MonoBehaviour
             ObjectPosition room = Instantiate(dungeonPrefabs.Room, new Vector3(x, y), Quaternion.identity, rooms);
             room.SetRange(left, top, sw, sh);
             room.SetPosition(left, top);
-
+            SpawnPlayer(left, right, top, bottom);
+            SpawnEnemy(left, right, top, bottom);
             // 部屋を通路にする
             FillDgRect(div.Room);
         }
     }
 
-	// DgRectの範囲を塗りつぶす
+    void SpawnPlayer(int left, int right, int top, int bottom)
+    {
+        if (spawnedPlayer)
+        {
+            return;
+        }
+        int r_x = Random.Range(left, right);
+        int r_y = Random.Range(top, bottom);
+
+        spawnedPlayer = true;
+        ObjectPosition playerObj = Instantiate(dungeonPrefabs.Player, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity);
+        player = playerObj;
+        canvas.worldCamera = player.GetComponentInChildren<Camera>();
+    }
+
+    void SpawnEnemy(int left, int right, int top, int bottom)
+    {
+        int r_x = Random.Range(left, right);
+        int r_y = Random.Range(top, bottom);
+
+        ObjectPosition enemy = Instantiate(dungeonPrefabs.Enemy, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity, enemysParent);
+        enemys.Add(enemy);
+    }
+
+
+    // DgRectの範囲を塗りつぶす
     void FillDgRect(DungeonRect r)
     {
         mapData2D.FillRectLTRB(r.Left, r.Top, r.Right, r.Bottom, CHIP_ROAD);
@@ -444,7 +494,6 @@ public class DungeonGenerator : MonoBehaviour
     }
     public ObjectPosition GetInRoom(int xgrid, int zgrid)
     {
-        Debug.Log($"{xgrid}:{zgrid}");
         foreach (var room in rooms.GetComponentsInChildren<ObjectPosition>())
         {
             if (IsInRoomOf(room, xgrid, zgrid))
@@ -455,14 +504,14 @@ public class DungeonGenerator : MonoBehaviour
         return null;
     }
 
-    void OnGUI()
-    {
-        if (GUI.Button(new Rect(160, 160, 128, 32), "もう１回"))
-        {
-            string currentScene = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(currentScene);
-        }
-    }
+    //void OnGUI()
+    //{
+    //    if (GUI.Button(new Rect(160, 160, 128, 32), "もう１回"))
+    //    {
+    //        string currentScene = SceneManager.GetActiveScene().name;
+    //        SceneManager.LoadScene(currentScene);
+    //    }
+    //}
 }
 
 [System.Serializable]
@@ -471,4 +520,6 @@ public class DungeonPrefabs
     public GameObject Wall;
     public GameObject Road;
     public ObjectPosition Room;
+    public ObjectPosition Player;
+    public ObjectPosition Enemy;
 }

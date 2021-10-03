@@ -25,8 +25,8 @@ public class Player : MonoBehaviour
         boxCollider2D = GetComponent<BoxCollider2D>();
 
         playerHp = GameManager.instance.initPlayerHp;
-        hpText.text = $"HP：{playerHp}";
-        atText.text = $"AT：{playerAt}";
+        // hpText.text = $"HP：{playerHp}";
+        // atText.text = $"AT：{playerAt}";
     }
 
     void Update()
@@ -138,7 +138,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Item"))
         {
             playerHp += GameManager.instance.itemPoint;
-            hpText.text = $"HP：{playerHp}";
+            // hpText.text = $"HP：{playerHp}";
             collision.gameObject.SetActive(false);
         }
         if (collision.gameObject.CompareTag("Finish"))
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
     public void PlayerDamage(int damage)
     {
         playerHp -= damage;
-        hpText.text = $"HP：{playerHp}";
+        // hpText.text = $"HP：{playerHp}";
     }
 
     void OnDisable()
