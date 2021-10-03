@@ -130,16 +130,16 @@ public class AutoMapping : MonoBehaviour
         road.GetComponent<RectTransform>().localScale = new Vector3(room.range.width, room.range.height, 1);
 
         //通路の表示
-        //for (int x = sx; x <= ex; x++)
-        //{
-        //    Mapping(x, sy - 1, field.IsCollide(x, sy - 1) ? 0 : 1);
-        //    Mapping(x, ey + 1, field.IsCollide(x, ey + 1) ? 0 : 1);
-        //}
-        //for (int y = sy; y <= ey; y++)
-        //{
-        //    Mapping(sx - 1, y, field.IsCollide(sx - 1, y) ? 0 : 1);
-        //    Mapping(ex + 1, y, field.IsCollide(ex + 1, y) ? 0 : 1);
-        //}
+        for (int x = sx; x <= ex; x++)
+        {
+            Mapping(x, sy - 1, dungeonGenerator.MapData2D.Get(x, sy-1) + 1);
+            Mapping(x, ey + 1, dungeonGenerator.MapData2D.Get(x, ey + 1) + 1);
+        }
+        for (int y = sy; y <= ey; y++)
+        {
+            Mapping(sx - 1, y, dungeonGenerator.MapData2D.Get(sx - 1, y) + 1);
+            Mapping(ex + 1, y, dungeonGenerator.MapData2D.Get(ex + 1, y) + 1);
+        }
     }
 
 
