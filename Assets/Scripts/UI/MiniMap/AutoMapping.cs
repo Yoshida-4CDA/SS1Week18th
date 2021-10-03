@@ -23,18 +23,35 @@ public class AutoMapping : MonoBehaviour
     [SerializeField] DungeonGenerator dungeonGenerator;
 
     // メソッドを追加
-    private void Update()
+    void Update()
     {
-        ShowObjects(enemyImage, enemies, enemiesObj);
+        Vector2Int p = ShowPlayerObject();
+        // Mapping(p.x, p.y, dungeonGenerator.MapData2D.Get(p.x, p.y) + 1);
+
+
+        // ShowObjects(enemyImage, enemies, enemiesObj);
         // ShowObjects(itemImage, items, itemsObj);
-        ShowPlayerObject();
+
+        ObjectPosition room = dungeonGenerator.GetInRoom(p.x, p.y);
+        if (room == null)
+        {
+            Mapping(p.x, p.y, dungeonGenerator.MapData2D.Get(p.x, p.y) + 1);
+        }
+        else
+        {
+            Debug.Log($"{room.gameObject.name}:{room.RoomGrind}");
+            Mapping(room);
+        }
+        ShowObjects(enemyImage, enemies, enemiesObj);
     }
 
-    private Vector2 ShowPlayerObject()
+    private Vector2Int ShowPlayerObject()
     {
-        Vector2Int p = new Vector2Int(
-                dungeonGenerator.GetGridX(player.transform.position.x),
-                dungeonGenerator.GetGridY(player.transform.position.y));
+        Vector2Int p = player.Grid;
+
+            //new Vector2Int(
+            //    dungeonGenerator.GetGridX(player.transform.position.x),
+            //    dungeonGenerator.GetGridY(player.transform.position.y));
 
         playerImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(pw * p.x, ph * -p.y);
         return p;
@@ -49,17 +66,20 @@ public class AutoMapping : MonoBehaviour
         for (int i = 0; i < objs.transform.childCount; i++)
         {
             // Pos2D p = objs.transform.GetChild(i).GetComponent<ObjectPosition>().grid;
-            Vector2Int p = new Vector2Int(
-                dungeonGenerator.GetGridX(objs.transform.GetChild(i).transform.position.x),
-                dungeonGenerator.GetGridY(objs.transform.GetChild(i).transform.position.y));
+            Vector2Int p = objs.transform.GetChild(i).GetComponent<ObjectPosition>().Grid;
+            //new Vector2Int(
+            //dungeonGenerator.GetGridX(objs.transform.GetChild(i).transform.position.x),
+            //dungeonGenerator.GetGridY(objs.transform.GetChild(i).transform.position.y));
             Transform img = imgs.transform.GetChild(i);
-            img.GetComponent<RectTransform>().anchoredPosition = new Vector2(pw * p.x, ph * -p.y);
-            img.gameObject.SetActive(true);
-
-            //if (map.Get(p.x, p.y) == 1 || true)
-            //{
-            //}
-            //else img.gameObject.SetActive(false);
+            if (map.Get(p.x, p.y) == 1)
+            {
+                img.GetComponent<RectTransform>().anchoredPosition = new Vector2(pw * p.x, ph * -p.y);
+                img.gameObject.SetActive(true);
+            }
+            else
+            {
+                img.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -71,10 +91,15 @@ public class AutoMapping : MonoBehaviour
     }
 
     /*
-    * 指定した位置をマッピングする
+    * 指定した位置をマッピングする:valueはDungeonのデータ
     */
     public void Mapping(int x, int y, int value)
     {
+        if (map.Get(x,y) > 0)
+        {
+            return;
+        }
+        Debug.Log(value);
         map.Set(x, y, value);
         if (value == 1)
         {
@@ -82,6 +107,41 @@ public class AutoMapping : MonoBehaviour
             road.GetComponent<RectTransform>().anchoredPosition = new Vector2(pw * x, ph * -y);
         }
     }
+
+    // TODO:playerの現在入っている部屋を取得
+    // 部屋のindex座標, 大きさがわかれば良い
+    // 部屋を配置してスケールを大きくすることで実現
+    public void Mapping(ObjectPosition room)
+    {
+        int sx = room.RoomGrind.x;// + room.range.left;
+        int sy = room.RoomGrind.y;// + room.range.top;
+        if (map.Get(sx, sy) > 0) return;
+        int ex = sx + room.range.width - 1;
+        int ey = sy + room.range.height - 1;
+        for (int x = sx; x <= ex; x++)
+        {
+            for (int y = sy; y <= ey; y++)
+            {
+                map.Set(x, y, 1);
+            }
+        }
+        GameObject road = Instantiate(roadImage, roads.transform);
+        road.GetComponent<RectTransform>().anchoredPosition = new Vector2(pw * (sx), ph * -sy);
+        road.GetComponent<RectTransform>().localScale = new Vector3(room.range.width, room.range.height, 1);
+
+        //通路の表示
+        //for (int x = sx; x <= ex; x++)
+        //{
+        //    Mapping(x, sy - 1, field.IsCollide(x, sy - 1) ? 0 : 1);
+        //    Mapping(x, ey + 1, field.IsCollide(x, ey + 1) ? 0 : 1);
+        //}
+        //for (int y = sy; y <= ey; y++)
+        //{
+        //    Mapping(sx - 1, y, field.IsCollide(sx - 1, y) ? 0 : 1);
+        //    Mapping(ex + 1, y, field.IsCollide(ex + 1, y) ? 0 : 1);
+        //}
+    }
+
 
     /*
     * 表示をリセットする
