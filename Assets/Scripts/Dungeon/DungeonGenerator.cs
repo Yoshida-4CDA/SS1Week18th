@@ -30,6 +30,7 @@ public class DungeonGenerator : MonoBehaviour
 
 
     bool spawnedPlayer;
+    bool spawnedGoal;
     ObjectPosition player;
     List<ObjectPosition> enemys = new List<ObjectPosition>(); 
 
@@ -307,6 +308,11 @@ public class DungeonGenerator : MonoBehaviour
             room.SetPosition(left, top);
             SpawnPlayer(left, right, top, bottom);
             SpawnEnemy(left, right, top, bottom);
+            if (divisionList[divisionList.Count-1] == div)
+            {
+                SpawnGaol(left, right, top, bottom);
+            }
+            SpawnItem(left, right, top, bottom);
             // 部屋を通路にする
             FillDgRect(div.Room);
         }
@@ -331,9 +337,42 @@ public class DungeonGenerator : MonoBehaviour
     {
         int r_x = Random.Range(left, right);
         int r_y = Random.Range(top, bottom);
-
+        while (player.Grid.x == r_x && player.Grid.y == r_y)
+        {
+            r_x = Random.Range(left, right);
+            r_y = Random.Range(top, bottom);
+        }
         ObjectPosition enemy = Instantiate(dungeonPrefabs.Enemy, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity, enemysParent);
         enemys.Add(enemy);
+    }
+
+    void SpawnGaol(int left, int right, int top, int bottom)
+    {
+        if (spawnedGoal)
+        {
+            return;
+        }
+        spawnedGoal = true;
+        int r_x = Random.Range(left, right);
+        int r_y = Random.Range(top, bottom);
+        while (player.Grid.x == r_x && player.Grid.y == r_y)
+        {
+            r_x = Random.Range(left, right);
+            r_y = Random.Range(top, bottom);
+        }
+        GameObject goal = Instantiate(dungeonPrefabs.Goal, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity);
+    }
+
+    void SpawnItem(int left, int right, int top, int bottom)
+    {
+        int r_x = Random.Range(left, right);
+        int r_y = Random.Range(top, bottom);
+        while (player.Grid.x == r_x && player.Grid.y == r_y)
+        {
+            r_x = Random.Range(left, right);
+            r_y = Random.Range(top, bottom);
+        }
+        Instantiate(dungeonPrefabs.Herb, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity);
     }
 
 
@@ -522,4 +561,6 @@ public class DungeonPrefabs
     public ObjectPosition Room;
     public ObjectPosition Player;
     public ObjectPosition Enemy;
+    public GameObject Goal;
+    public GameObject Herb;
 }

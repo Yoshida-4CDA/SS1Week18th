@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1642611724524430946}
   - component: {fileID: 1642611724524430973}
   - component: {fileID: -5682677909539849909}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ MonoBehaviour:
   isMoving: 0
   blockingLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 256
   enemyHp: 5
   hpText: {fileID: 0}
   enemyAt: 2
@@ -130,7 +130,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.9, y: 0.9}
   m_EdgeRadius: 0
 --- !u!50 &1642611724524430973
 Rigidbody2D:
