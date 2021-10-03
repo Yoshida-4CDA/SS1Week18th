@@ -14,19 +14,16 @@ public class Player : MonoBehaviour
     BoxCollider2D boxCollider2D;
     [SerializeField] LayerMask blockingLayer;
 
-    [Header("HP")]
-    [SerializeField] int playerHp;
-    [Header("HPテキスト")]
-    [SerializeField] Text hpText;
-    [Header("AT")]
-    [SerializeField] int playerAt;
-    [Header("ATテキスト")]
-    [SerializeField] Text atText;
+    int playerHp;                       // PlayerのHP
+    [SerializeField] Text hpText;       // PlayerのHPテキスト
+    [SerializeField] int playerAt;      // PlayerのAT
+    [SerializeField] Text atText;       // PlayerのATテキスト
 
     void Start()
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
 
+        playerHp = GameManager.instance.initPlayerHp;
         hpText.text = $"HP：{playerHp}";
         atText.text = $"AT：{playerAt}";
     }
@@ -133,6 +130,16 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Playerの攻撃");
         enemy.EnemyDamage(playerAt);
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Item"))
+        {
+            playerHp += GameManager.instance.itemPoint;
+            hpText.text = $"HP：{playerHp}";
+            collision.gameObject.SetActive(false);
+        }
     }
 
     public void PlayerDamage(int damage)

@@ -9,7 +9,10 @@ public class GameManager : MonoBehaviour
     public bool playerTurn = true;
     public bool enemyTurn = false;
 
-    List<Enemy> enemies;    // Enemyを管理するリスト
+    public int initPlayerHp;    // Playerの初期HP
+    public int itemPoint;       // Itemの回復量
+
+    List<Enemy> enemies;        // Enemyを管理するリスト
 
     void Awake()
     {

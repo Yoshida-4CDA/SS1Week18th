@@ -13,14 +13,10 @@ public class Enemy : MonoBehaviour
     Transform target;       // プレイヤー(target)の座標
     // bool skipMove;          // 敵のターンをスキップさせる変数
 
-    [Header("EnemyのHP")]
-    [SerializeField] int enemyHp;
-    [Header("HPテキスト")]
-    [SerializeField] Text hpText;
-    [Header("EnemyのAT")]
-    [SerializeField] int enemyAt;
-    [Header("ATテキスト")]
-    [SerializeField] Text atText;
+    [SerializeField] int enemyHp;   // EnemyのHP
+    [SerializeField] Text hpText;   // EnemyのHPテキスト
+    [SerializeField] int enemyAt;   // EnemyのAT
+    [SerializeField] Text atText;   // EnemyのATテキスト
 
     void Start()
     {
