@@ -8,6 +8,7 @@ public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField] DungeonPrefabs dungeonPrefabs;
     [SerializeField] AutoMapping autoMapping;
+    [SerializeField] Transform rooms;
 
     const int WIDTH = 36;
     const int HEIGHT = 20;
@@ -24,6 +25,8 @@ public class DungeonGenerator : MonoBehaviour
     DungeonMapData2D mapData2D = null;      // 2次元配列情報
 
     List<DungeonDivision> divisionList = null;   // 区画リスト
+
+    public DungeonMapData2D MapData2D { get => mapData2D; }
 
     /// チップ上のX座標を取得する:整数値のデータを配置する座標に変換する
     float GetChipX(int i)
@@ -81,6 +84,7 @@ public class DungeonGenerator : MonoBehaviour
         bool bVertical = (Random.Range(0, 2) == 0);
         SplitDivison(bVertical);
 
+
         // ■5. 区画に部屋を作る
         CreateRoom();
 
@@ -89,6 +93,8 @@ public class DungeonGenerator : MonoBehaviour
         // Dump();
         InstantiateDungeon();
     }
+
+
 
     // デバッグ出力
     void Dump()
@@ -114,16 +120,18 @@ public class DungeonGenerator : MonoBehaviour
                     // 壁生成
                     float x = GetChipX(i);
                     float y = GetChipY(j);
-                    Instantiate(dungeonPrefabs.Wall, new Vector3(x, y), Quaternion.identity);
+                    GameObject wallObj = Instantiate(dungeonPrefabs.Wall, new Vector3(x, y), Quaternion.identity);
                 }
                 else if (mapData2D.Get(i, j) == CHIP_ROAD)
                 {
-                    // 壁生成
                     float x = GetChipX(i);
                     float y = GetChipY(j);
-                    Instantiate(dungeonPrefabs.Road, new Vector3(x, y), Quaternion.identity);
+                    GameObject roadObj = Instantiate(dungeonPrefabs.Road, new Vector3(x, y), Quaternion.identity);
+                    // roadObj.GetComponent<ObjectPosition>().SetRange(0, 0, 1, 1);// TODO:部屋の情報
+                    // ObjectPosition objectPosition = Instantiate(dungeonPrefabs.Room, rooms);
+                    // roadObj.GetComponent<ObjectPosition>().SetPosition(i, j);
                 }
-                autoMapping.Mapping(i, j, mapData2D.Get(i, j) + 1);
+                // autoMapping.Mapping(i, j, mapData2D.Get(i, j) + 1);
             }
         }
     }
@@ -267,6 +275,12 @@ public class DungeonGenerator : MonoBehaviour
 
             // 部屋のサイズを設定
             div.Room.Set(left, top, right, bottom);
+            float x = GetChipX(left);
+            float y = GetChipY(top);
+
+            ObjectPosition room = Instantiate(dungeonPrefabs.Room, new Vector3(x, y), Quaternion.identity, rooms);
+            room.SetRange(left, top, sw, sh);
+            room.SetPosition(left, top);
 
             // 部屋を通路にする
             FillDgRect(div.Room);
@@ -418,6 +432,28 @@ public class DungeonGenerator : MonoBehaviour
         }
         mapData2D.FillRectLTRB(x, top, x + 1, bottom + 1, CHIP_ROAD);
     }
+    public bool IsInRoomOf(ObjectPosition room, int xgrid, int zgrid)
+    {
+        return (room.RoomGrind.x <= xgrid && xgrid <= room.RoomGrind.x + room.range.width-1) &&
+            (room.RoomGrind.y <= zgrid && zgrid <= room.RoomGrind.y + room.range.height-1);
+        int sx = room.RoomGrind.x + room.range.left;
+        int ex = sx + room.range.right;
+        int sz = room.RoomGrind.y + room.range.top;
+        int ez = sz + room.range.bottom;
+        return xgrid >= sx && xgrid <= ex && zgrid >= sz && zgrid <= ez;
+    }
+    public ObjectPosition GetInRoom(int xgrid, int zgrid)
+    {
+        Debug.Log($"{xgrid}:{zgrid}");
+        foreach (var room in rooms.GetComponentsInChildren<ObjectPosition>())
+        {
+            if (IsInRoomOf(room, xgrid, zgrid))
+            {
+                return room;
+            }
+        }
+        return null;
+    }
 
     void OnGUI()
     {
@@ -434,4 +470,5 @@ public class DungeonPrefabs
 {
     public GameObject Wall;
     public GameObject Road;
+    public ObjectPosition Room;
 }
