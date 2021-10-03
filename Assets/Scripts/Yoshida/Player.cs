@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] Text hpText;       // PlayerのHPテキスト
     [SerializeField] int playerAt;      // PlayerのAT
     [SerializeField] Text atText;       // PlayerのATテキスト
+    // TODO:嶋津 Text系はUIに依存するから、統合するときにnullになりやすいので、Debugでの実装がありがたい
 
     void Start()
     {
@@ -161,6 +162,7 @@ public class Player : MonoBehaviour
 
     public void Restart()
     {
-        SceneManager.LoadScene(2);
+        string currentScene = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentScene);
     }
 }

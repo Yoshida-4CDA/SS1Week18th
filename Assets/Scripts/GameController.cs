@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour
 
     void HandleUpdateIdle()
     {
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             OpenInventory();
         }
