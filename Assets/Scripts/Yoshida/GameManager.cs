@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -27,11 +28,30 @@ public class GameManager : MonoBehaviour
         }
 
         enemies = new List<Enemy>();
+
+        InitGame();
+    }
+
+    // ゲーム開始時に一度だけ必ず呼ばれる
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    static public void Call()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;  // 関数を登録
+    }
+
+    // シーンロード時に毎回呼ばれる関数
+    static void OnSceneLoaded(Scene next, LoadSceneMode a)
+    {
+        instance.InitGame();
+    }
+
+    public void InitGame()
+    {
+        enemies.Clear();
     }
 
     void Start()
     {
-        enemies.Clear();
     }
 
     void Update()
