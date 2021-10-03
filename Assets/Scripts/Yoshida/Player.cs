@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -140,11 +141,26 @@ public class Player : MonoBehaviour
             hpText.text = $"HP：{playerHp}";
             collision.gameObject.SetActive(false);
         }
+        if (collision.gameObject.CompareTag("Finish"))
+        {
+            Invoke("Restart", 1f);
+            enabled = false;
+        }
     }
 
     public void PlayerDamage(int damage)
     {
         playerHp -= damage;
         hpText.text = $"HP：{playerHp}";
+    }
+
+    void OnDisable()
+    {
+        GameManager.instance.initPlayerHp = playerHp;
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(2);
     }
 }
