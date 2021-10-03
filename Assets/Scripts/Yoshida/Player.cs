@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -13,13 +14,30 @@ public class Player : MonoBehaviour
     BoxCollider2D boxCollider2D;
     [SerializeField] LayerMask blockingLayer;
 
+    [Header("HP")]
+    [SerializeField] int playerHp;
+    [Header("HPテキスト")]
+    [SerializeField] Text hpText;
+    [Header("AT")]
+    [SerializeField] int playerAt;
+    [Header("ATテキスト")]
+    [SerializeField] Text atText;
+
     void Start()
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
+
+        hpText.text = $"HP：{playerHp}";
+        atText.text = $"AT：{playerAt}";
     }
 
     void Update()
     {
+        if (!GameManager.instance.playerTurn)
+        {
+            return;
+        }
+
         axisX = (int)Input.GetAxisRaw("Horizontal");
         axisY = (int)Input.GetAxisRaw("Vertical");
 
@@ -58,11 +76,18 @@ public class Player : MonoBehaviour
         // Rayにぶつかるものが無ければ移動できる
         if (hit.transform == null)
         {
-            // プレイヤーのターン終了
+            // プレイヤーのターン(移動)終了
             GameManager.instance.playerTurn = false;
             return;
         }
-        // プレイヤーのターン終了
+
+        Enemy hitComponent = hit.transform.GetComponent<Enemy>();
+
+        if (!canMove && hitComponent != null)
+        {
+            OnCantMove(hitComponent);
+        }
+        // プレイヤーのターン(攻撃)終了
         GameManager.instance.playerTurn = false;
     }
 
@@ -102,5 +127,17 @@ public class Player : MonoBehaviour
         }
         transform.position = targetPos;
         isMoving = false;
+    }
+
+    void OnCantMove(Enemy enemy)
+    {
+        Debug.Log("Playerの攻撃");
+        enemy.EnemyDamage(playerAt);
+    }
+
+    public void PlayerDamage(int damage)
+    {
+        playerHp -= damage;
+        hpText.text = $"HP：{playerHp}";
     }
 }
