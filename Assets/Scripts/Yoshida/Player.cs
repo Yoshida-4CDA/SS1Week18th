@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
@@ -16,9 +15,10 @@ public class Player : MonoBehaviour
     [SerializeField] LayerMask blockingLayer;
 
     int playerHp;                       // PlayerのHP
-    [SerializeField] Text hpText;       // PlayerのHPテキスト
     [SerializeField] int playerAt;      // PlayerのAT
-    [SerializeField] Text atText;       // PlayerのATテキスト
+
+    // [SerializeField] Text hpText;       // PlayerのHPテキスト
+    // [SerializeField] Text atText;       // PlayerのATテキスト
     // TODO:嶋津 Text系はUIに依存するから、統合するときにnullになりやすいので、Debugでの実装がありがたい
 
     void Start()
@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
         boxCollider2D = GetComponent<BoxCollider2D>();
 
         playerHp = GameManager.instance.initPlayerHp;
+        Debug.Log($"PlayerのHP：{playerHp}　PlayerのAT：{playerAt}");
         // hpText.text = $"HP：{playerHp}";
         // atText.text = $"AT：{playerAt}";
     }
@@ -87,6 +88,7 @@ public class Player : MonoBehaviour
             OnCantMove(hitComponent);
         }
         // プレイヤーのターン(攻撃)終了
+        CheckHP();
         GameManager.instance.playerTurn = false;
     }
 
@@ -126,6 +128,7 @@ public class Player : MonoBehaviour
         }
         transform.position = targetPos;
         isMoving = false;
+        CheckHP();
     }
 
     void OnCantMove(Enemy enemy)
@@ -140,6 +143,7 @@ public class Player : MonoBehaviour
         {
             playerHp += GameManager.instance.itemPoint;
             // hpText.text = $"HP：{playerHp}";
+            Debug.Log($"PlayerのHP：{playerHp}");
             collision.gameObject.SetActive(false);
         }
         if (collision.gameObject.CompareTag("Finish"))
@@ -152,7 +156,9 @@ public class Player : MonoBehaviour
     public void PlayerDamage(int damage)
     {
         playerHp -= damage;
+        CheckHP();
         // hpText.text = $"HP：{playerHp}";
+        Debug.Log($"PlayerのHP：{playerHp}");
     }
 
     void OnDisable()
@@ -164,5 +170,14 @@ public class Player : MonoBehaviour
     {
         string currentScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentScene);
+    }
+
+    void CheckHP()
+    {
+        if (playerHp <= 0)
+        {
+            GameManager.instance.GameOver();
+            gameObject.SetActive(false);
+        }
     }
 }

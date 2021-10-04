@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -14,9 +13,9 @@ public class Enemy : MonoBehaviour
     // bool skipMove;          // 敵のターンをスキップさせる変数
 
     [SerializeField] int enemyHp;   // EnemyのHP
-    [SerializeField] Text hpText;   // EnemyのHPテキスト
     [SerializeField] int enemyAt;   // EnemyのAT
-    [SerializeField] Text atText;   // EnemyのATテキスト
+    // [SerializeField] Text hpText;   // EnemyのHPテキスト
+    // [SerializeField] Text atText;   // EnemyのATテキスト
 
     void Start()
     {
@@ -27,6 +26,7 @@ public class Enemy : MonoBehaviour
 
         // hpText.text = $"HP：{enemyHp}";
         // atText.text = $"AT：{enemyAt}";
+        Debug.Log($"EnemyのHP：{enemyHp}　EnemyのAT：{enemyAt}");
     }
 
     public void MoveEnemy()
@@ -140,6 +140,7 @@ public class Enemy : MonoBehaviour
     {
         enemyHp -= damage;
         // hpText.text = $"HP：{enemyHp}";
+        Debug.Log($"EnemyのHP：{enemyHp}");
 
         if (enemyHp <= 0)
         {

@@ -92,4 +92,10 @@ public class GameManager : MonoBehaviour
         enemyTurn = false;
         playerTurn = true;
     }
+
+    public void GameOver()
+    {
+        Debug.Log("ゲームオーバー");
+        enabled = false;
+    }
 }
