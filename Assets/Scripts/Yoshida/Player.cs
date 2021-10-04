@@ -29,7 +29,8 @@ public class Player : MonoBehaviour
 
         status.hp = GameData.instance.PlayerStatus.hp;
         status.at = GameData.instance.PlayerStatus.at;
-        Debug.Log($"PlayerのHP：{status.hp}　PlayerのAT：{status.at}");
+        status.exp = GameData.instance.PlayerStatus.exp;
+        Debug.Log($"PlayerのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
     }
 
     public void HandleUpdate()
@@ -161,7 +162,6 @@ public class Player : MonoBehaviour
         GameData.instance.PlayerStatus = status;
     }
 
-
     void CheckHP()
     {
         if (status.hp <= 0)
@@ -169,5 +169,11 @@ public class Player : MonoBehaviour
             OnGameOver();
             gameObject.SetActive(false);
         }
+    }
+
+    public void AddExp(int exp)
+    {
+        status.exp += exp;
+        Debug.Log($"経験値{exp}を得た\n現在の経験値：{status.exp}");
     }
 }

@@ -63,15 +63,15 @@ public class GameManager : MonoBehaviour
         // StartCoroutine(MoveEnemies());
     }
 
-    public void AddEnemy(Enemy enemy)
-    {
-        enemies.Add(enemy);
-    }
+    //public void AddEnemy(Enemy enemy)
+    //{
+    //    enemies.Add(enemy);
+    //}
 
-    public void DestroyEnemyToList(Enemy enemy)
-    {
-        enemies.Remove(enemy);
-    }
+    //public void DestroyEnemyToList(Enemy enemy)
+    //{
+    //    enemies.Remove(enemy);
+    //}
 
     //IEnumerator MoveEnemies()
     //{
@@ -93,9 +93,9 @@ public class GameManager : MonoBehaviour
     //    playerTurn = true;
     //}
 
-    public void GameOver()
-    {
-        Debug.Log("ゲームオーバー");
-        enabled = false;
-    }
+    //public void GameOver()
+    //{
+    //    Debug.Log("ゲームオーバー");
+    //    enabled = false;
+    //}
 }

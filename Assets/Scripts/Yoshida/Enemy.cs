@@ -10,11 +10,12 @@ public class Enemy : MonoBehaviour
 
     BoxCollider2D boxCollider2D;
     [SerializeField] LayerMask blockingLayer;
-    Transform target;       // プレイヤー(target)の座標
-    // bool skipMove;          // 敵のターンをスキップさせる変数
+    Transform target;               // プレイヤー(target)の座標
 
     [SerializeField] int enemyHp;   // EnemyのHP
     [SerializeField] int enemyAt;   // EnemyのAT
+    public int enemyExp;            // Enemyの経験値
+
     public UnityAction<Enemy> OnDestroyEnemy;
 
     public int HP { get => enemyHp; }
@@ -22,10 +23,9 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-
         boxCollider2D = GetComponent<BoxCollider2D>();
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
-        Debug.Log($"EnemyのHP：{enemyHp}　EnemyのAT：{enemyAt}");
+        Debug.Log($"EnemyのHP：{enemyHp}　AT：{enemyAt}　経験値：{enemyExp}");
     }
 
     public bool MoveEnemy()

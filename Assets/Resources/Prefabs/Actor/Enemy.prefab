@@ -103,9 +103,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   enemyHp: 5
-  hpText: {fileID: 0}
   enemyAt: 2
-  atText: {fileID: 0}
+  enemyExp: 2
 --- !u!61 &1642611724524430946
 BoxCollider2D:
   m_ObjectHideFlags: 0

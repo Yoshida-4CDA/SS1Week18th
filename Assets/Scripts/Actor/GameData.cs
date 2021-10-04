@@ -26,7 +26,9 @@ public class GameData : MonoBehaviour
 [System.Serializable]
 public class PlayerStatus
 {
+    public int level;
     public int hp;
     public int at;
+    public int exp;
     public int currentStage;
 }
