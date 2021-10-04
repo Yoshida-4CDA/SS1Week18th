@@ -27,9 +27,12 @@ public class Player : MonoBehaviour
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
 
+        status.level = GameData.instance.PlayerStatus.level;
         status.hp = GameData.instance.PlayerStatus.hp;
         status.at = GameData.instance.PlayerStatus.at;
         status.exp = GameData.instance.PlayerStatus.exp;
+        status.currentStage = GameData.instance.PlayerStatus.currentStage;
+
         Debug.Log($"PlayerのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
     }
 
