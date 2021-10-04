@@ -142,9 +142,11 @@ public class GameController : MonoBehaviour
     void RemoveEnemy(Enemy enemy)
     {
         enemies.Remove(enemy);
+        player.AddExp(enemy.enemyExp);
     }
 
-    IEnumerator MoveEnemies()
+    // TODO:Playerと重なるバグ修正
+    IEnumerator MoveEnemies()   
     {
         // yield return new WaitForSeconds(0.1f);
 
