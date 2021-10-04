@@ -7,14 +7,10 @@ public class PlayerStatusUI : MonoBehaviour
 {
     [SerializeField] Text hpText = default;
     [SerializeField] Text atText = default;
-    void Start()
-    {
-        SetData(20,12);
-    }
 
-    public void SetData(int hp, int at)
+    public void SetData(PlayerStatus playerStatus)
     {
-        hpText.text = $"HP:{hp}";
-        atText.text = $"AT:{at}";
+        hpText.text = $"HP:{playerStatus.hp}";
+        atText.text = $"AT:{playerStatus.at}";
     }
 }

@@ -35,6 +35,8 @@ public class DungeonGenerator : MonoBehaviour
     List<ObjectPosition> enemys = new List<ObjectPosition>(); 
 
     public DungeonMapData2D MapData2D { get => mapData2D; }
+    public ObjectPosition Player { get => player; }
+    public List<ObjectPosition> Enemys { get => enemys; }
 
     /// チップ上のX座標を取得する:整数値のデータを配置する座標に変換する
     float GetChipX(int i)
@@ -72,7 +74,7 @@ public class DungeonGenerator : MonoBehaviour
     }
 
 
-    void Start()
+    public void Init()
     {
         // ■1. 初期化
         // 2次元配列初期化

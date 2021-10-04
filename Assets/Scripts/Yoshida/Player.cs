@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
@@ -14,30 +14,26 @@ public class Player : MonoBehaviour
     BoxCollider2D boxCollider2D;
     [SerializeField] LayerMask blockingLayer;
 
-    int playerHp;                       // PlayerのHP
-    [SerializeField] int playerAt;      // PlayerのAT
+    PlayerStatus status = new PlayerStatus();
 
-    // [SerializeField] Text hpText;       // PlayerのHPテキスト
-    // [SerializeField] Text atText;       // PlayerのATテキスト
-    // TODO:嶋津 Text系はUIに依存するから、統合するときにnullになりやすいので、Debugでの実装がありがたい
+    public UnityAction OnPlayerTurnEnd;
+    public UnityAction OnGameOver;
+    public UnityAction OnGoal;
 
-    void Start()
+
+    public PlayerStatus Status { get => status; }
+
+    public void Init()
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
 
-        playerHp = GameManager.instance.initPlayerHp;
-        Debug.Log($"PlayerのHP：{playerHp}　PlayerのAT：{playerAt}");
-        // hpText.text = $"HP：{playerHp}";
-        // atText.text = $"AT：{playerAt}";
+        status.hp = GameData.instance.PlayerStatus.hp;
+        status.at = GameData.instance.PlayerStatus.at;
+        Debug.Log($"PlayerのHP：{status.hp}　PlayerのAT：{status.at}");
     }
 
-    void Update()
+    public void HandleUpdate()
     {
-        if (!GameManager.instance.playerTurn)
-        {
-            return;
-        }
-
         axisX = (int)Input.GetAxisRaw("Horizontal");
         axisY = (int)Input.GetAxisRaw("Vertical");
 
@@ -77,7 +73,7 @@ public class Player : MonoBehaviour
         if (hit.transform == null)
         {
             // プレイヤーのターン(移動)終了
-            GameManager.instance.playerTurn = false;
+            OnPlayerTurnEnd();
             return;
         }
 
@@ -89,7 +85,7 @@ public class Player : MonoBehaviour
         }
         // プレイヤーのターン(攻撃)終了
         CheckHP();
-        GameManager.instance.playerTurn = false;
+        OnPlayerTurnEnd();
     }
 
     public bool Move(int x, int y, out RaycastHit2D hit)
@@ -134,49 +130,43 @@ public class Player : MonoBehaviour
     void OnCantMove(Enemy enemy)
     {
         Debug.Log("Playerの攻撃");
-        enemy.EnemyDamage(playerAt);
+        enemy.EnemyDamage(status.at);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Item"))
         {
-            playerHp += GameManager.instance.itemPoint;
-            // hpText.text = $"HP：{playerHp}";
-            Debug.Log($"PlayerのHP：{playerHp}");
+            // status.hp += GameData.instance.itemPoint;
+            Debug.Log($"PlayerのHP：{status.hp}");
             collision.gameObject.SetActive(false);
         }
         if (collision.gameObject.CompareTag("Finish"))
         {
-            Invoke("Restart", 1f);
-            enabled = false;
+            OnGoal?.Invoke();
+            // Invoke("Restart", 1f);
+            // enabled = false;
         }
     }
 
     public void PlayerDamage(int damage)
     {
-        playerHp -= damage;
+        status.hp -= damage;
         CheckHP();
-        // hpText.text = $"HP：{playerHp}";
-        Debug.Log($"PlayerのHP：{playerHp}");
+        Debug.Log($"PlayerのHP：{status.hp}");
     }
 
     void OnDisable()
     {
-        GameManager.instance.initPlayerHp = playerHp;
+        GameData.instance.PlayerStatus = status;
     }
 
-    public void Restart()
-    {
-        string currentScene = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentScene);
-    }
 
     void CheckHP()
     {
-        if (playerHp <= 0)
+        if (status.hp <= 0)
         {
-            GameManager.instance.GameOver();
+            OnGameOver();
             gameObject.SetActive(false);
         }
     }

@@ -853,6 +853,53 @@ MonoBehaviour:
   m_Spacing: {x: 66.6, y: 0}
   m_Constraint: 1
   m_ConstraintCount: 3
+--- !u!1 &575300047
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 575300049}
+  - component: {fileID: 575300048}
+  m_Layer: 0
+  m_Name: GameData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &575300048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575300047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f9e5b79467a14be5a61179d3246dd76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerStatus:
+    hp: 200
+    at: 10
+    currentStage: 1
+--- !u!4 &575300049
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575300047}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &588352514
 GameObject:
   m_ObjectHideFlags: 0
@@ -1446,6 +1493,8 @@ MonoBehaviour:
   inventoryUI: {fileID: 396669631}
   messageUI: {fileID: 1031270457}
   statusUPSelection: {fileID: 478722359}
+  dungeonGenerator: {fileID: 5335274479140745614}
+  playerStatusUI: {fileID: 382457402}
   inventory: {fileID: 1081775181}
 --- !u!4 &1081775180
 Transform:

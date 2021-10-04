@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
@@ -14,22 +15,20 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] int enemyHp;   // EnemyのHP
     [SerializeField] int enemyAt;   // EnemyのAT
-    // [SerializeField] Text hpText;   // EnemyのHPテキスト
-    // [SerializeField] Text atText;   // EnemyのATテキスト
+    public UnityAction<Enemy> OnDestroyEnemy;
+
+    public int HP { get => enemyHp; }
+
 
     void Start()
     {
-        GameManager.instance.AddEnemy(this);
 
         boxCollider2D = GetComponent<BoxCollider2D>();
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
-
-        // hpText.text = $"HP：{enemyHp}";
-        // atText.text = $"AT：{enemyAt}";
         Debug.Log($"EnemyのHP：{enemyHp}　EnemyのAT：{enemyAt}");
     }
 
-    public void MoveEnemy()
+    public bool MoveEnemy()
     {
         int xDir = 0;
         int yDir = 0;
@@ -61,10 +60,10 @@ public class Enemy : MonoBehaviour
                 transform.localScale = new Vector3(1, 1, 1);
             }
         }
-        ATMove(xDir, yDir);
+        return ATMove(xDir, yDir);
     }
 
-    public void ATMove(int x, int y)
+    public bool ATMove(int x, int y)
     {
         RaycastHit2D hit;
 
@@ -74,7 +73,7 @@ public class Enemy : MonoBehaviour
         // Rayにぶつかるものが無ければ移動できる
         if (hit.transform == null)
         {
-            return;
+            return false;
         }
 
         Player hitComponent = hit.transform.GetComponent<Player>();
@@ -82,7 +81,9 @@ public class Enemy : MonoBehaviour
         if (!canMove && hitComponent != null)
         {
             OnCantMove(hitComponent);
+            return true;
         }
+        return false;
     }
 
     public bool Move(int x, int y, out RaycastHit2D hit)
@@ -139,57 +140,13 @@ public class Enemy : MonoBehaviour
     public void EnemyDamage(int damage)
     {
         enemyHp -= damage;
-        // hpText.text = $"HP：{enemyHp}";
         Debug.Log($"EnemyのHP：{enemyHp}");
 
         if (enemyHp <= 0)
         {
             Debug.Log("Enemyを倒した");
-            GameManager.instance.DestroyEnemyToList(this);
+            OnDestroyEnemy?.Invoke(this);
             gameObject.SetActive(false);
-            // hpText.text = "";
-            // atText.text = "";
         }
     }
 }
-/*
-         if (!skipMove)
-        {
-            skipMove = true;    // 次のターンは動けないようにする
-            int xDir = 0;
-            int yDir = 0;
-
-            // Playerと同じx軸にいるかどうかを判定
-            if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon)
-            {
-                // y軸を動かす(PlayerがEnemyより高い位置にいるなら上/低い位置にいるなら下に移動する)
-                if (target.transform.position.y > transform.position.y)
-                {
-                    yDir = 1;
-                }
-                else
-                {
-                    yDir = -1;
-                }
-            }
-            else
-            {
-                // x軸を動かす(PlayerがEnemyより高い位置にいるなら右/低い位置にいるなら左に移動する)
-                if (target.transform.position.x > transform.position.x)
-                {
-                    xDir = 1;
-                    transform.localScale = new Vector3(-1, 1, 1);
-                }
-                else
-                {
-                    xDir = -1;
-                    transform.localScale = new Vector3(1, 1, 1);
-                }
-            }
-            ATMove(xDir, yDir);
-        }
-        else
-        {
-            skipMove = false;   // 次のターンは動けるようにする
-        }
-*/
