@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class GameController : MonoBehaviour
@@ -9,12 +10,20 @@ public class GameController : MonoBehaviour
     {
         Idle,
         OpenInventory,
+        UseItem,
+        PlayerAttack,
+        PlayerMove,
+        EnemyTurn,
+        Busy,
         StatusUPSelection,
+        End,
     }
 
     [SerializeField] InventoryUI inventoryUI;
     [SerializeField] MessageUI messageUI;
     [SerializeField] StatusUPSelection statusUPSelection;
+    [SerializeField] DungeonGenerator dungeonGenerator;
+    [SerializeField] PlayerStatusUI playerStatusUI;
 
     [SerializeField] Inventory inventory;
 
@@ -23,11 +32,31 @@ public class GameController : MonoBehaviour
     int currentItemSlot;
     int currentStatusUPIndex;
 
+    Player player;
+    List<Enemy> enemies;
+
     void Start()
     {
+        dungeonGenerator.Init();
+        player = dungeonGenerator.Player.GetComponent<Player>();
+        player.Init();
+        
+        enemies = new List<Enemy>();
+        foreach (ObjectPosition enemyObj in dungeonGenerator.Enemys)
+        {
+            Enemy enemy = enemyObj.GetComponent<Enemy>();
+            enemy.OnDestroyEnemy += RemoveEnemy;
+            enemies.Add(enemy);
+        }
+
+        player.OnPlayerTurnEnd += PlayerEnd;
+        player.OnGameOver += GameOver;
+        player.OnGoal += Restart;
+
         state = GameState.Idle;
         statusUPSelection.gameObject.SetActive(false);
         inventoryUI.gameObject.SetActive(false);
+        playerStatusUI.SetData(player.Status);
     }
 
     // ゲームの状態に応じて、入力処理をかえる
@@ -47,13 +76,30 @@ public class GameController : MonoBehaviour
             case GameState.StatusUPSelection:
                 HandleStatusUPSelection();
                 break;
+            case GameState.PlayerAttack:
+                HandleUpdatePlayerAttack();
+                break;
+            case GameState.PlayerMove:
+                HandleUpdatePlayerMove();
+                break;
+            case GameState.EnemyTurn:
+                HandleUpdateEnemyTurn();
+                break;
+            case GameState.UseItem:
+                HandleUpdateUseItem();
+                break;
+            case GameState.End:
+                HandleUpdateEnd();
+                break;
         }
-
     }
 
     // Idle時の処理
     void HandleUpdateIdle()
     {
+
+        player.HandleUpdate();
+
         if (Input.GetKeyDown(KeyCode.I))
         {
             OpenInventory();
@@ -63,6 +109,60 @@ public class GameController : MonoBehaviour
         {
             OpenStatusSelectionUI();
         }
+    }
+
+    void HandleUpdatePlayerAttack()
+    {
+    }
+    void HandleUpdatePlayerMove()
+    {
+    }
+    void HandleUpdateEnemyTurn()
+    {
+        state = GameState.Busy;
+        StartCoroutine(MoveEnemies());
+    }
+    void HandleUpdateUseItem()
+    {
+    }
+    void HandleUpdateEnd()
+    {
+        state = GameState.Idle;
+    }
+
+    void PlayerEnd()
+    {
+        // GameState.BusyだったらBusyのまま, そうじゃないなら敵のターン
+        if (state != GameState.Busy)
+        {
+            state = GameState.EnemyTurn;
+        }
+    }
+
+    void RemoveEnemy(Enemy enemy)
+    {
+        enemies.Remove(enemy);
+    }
+
+    IEnumerator MoveEnemies()
+    {
+        // yield return new WaitForSeconds(0.1f);
+
+        if (enemies.Count == 0)
+        {
+            // yield return new WaitForSeconds(0.1f);
+        }
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            bool attacked = enemies[i].MoveEnemy();
+            if (attacked)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            playerStatusUI.SetData(player.Status);
+        }
+        state = GameState.End;
     }
 
     // インベントリを開いてる時の処理
@@ -151,4 +251,22 @@ public class GameController : MonoBehaviour
         statusUPSelection.gameObject.SetActive(false);
     }
 
+    void GameOver()
+    {
+        Debug.Log("ゲームオーバー");
+        // enabled = false;
+        state = GameState.Busy;
+    }
+    void Restart()
+    {
+        state = GameState.Busy;
+        StartCoroutine(DelayRestart());
+    }
+
+    IEnumerator DelayRestart()
+    {
+        yield return new WaitForSeconds(1f);
+        string currentScene = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentScene);
+    }
 }

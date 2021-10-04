@@ -29,26 +29,26 @@ public class GameManager : MonoBehaviour
 
         enemies = new List<Enemy>();
 
-        InitGame();
+        // InitGame();
     }
 
-    // ゲーム開始時に一度だけ必ず呼ばれる
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    static public void Call()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;  // 関数を登録
-    }
+    //// ゲーム開始時に一度だけ必ず呼ばれる
+    //[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    //static public void Call()
+    //{
+    //    SceneManager.sceneLoaded += OnSceneLoaded;  // 関数を登録
+    //}
 
-    // シーンロード時に毎回呼ばれる関数
-    static void OnSceneLoaded(Scene next, LoadSceneMode a)
-    {
-        instance.InitGame();
-    }
+    //// シーンロード時に毎回呼ばれる関数
+    //static void OnSceneLoaded(Scene next, LoadSceneMode a)
+    //{
+    //    instance.InitGame();
+    //}
 
-    public void InitGame()
-    {
-        enemies.Clear();
-    }
+    //public void InitGame()
+    //{
+    //    enemies.Clear();
+    //}
 
     void Start()
     {
@@ -56,11 +56,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (playerTurn || enemyTurn)
-        {
-            return;
-        }
-        StartCoroutine(MoveEnemies());
+        //if (playerTurn || enemyTurn)
+        //{
+        //    return;
+        //}
+        // StartCoroutine(MoveEnemies());
     }
 
     public void AddEnemy(Enemy enemy)
@@ -73,25 +73,25 @@ public class GameManager : MonoBehaviour
         enemies.Remove(enemy);
     }
 
-    IEnumerator MoveEnemies()
-    {
-        enemyTurn = true;
-        yield return new WaitForSeconds(0.1f);
+    //IEnumerator MoveEnemies()
+    //{
+    //    enemyTurn = true;
+    //    yield return new WaitForSeconds(0.1f);
 
-        if (enemies.Count == 0)
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
+    //    if (enemies.Count == 0)
+    //    {
+    //        yield return new WaitForSeconds(0.1f);
+    //    }
 
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            enemies[i].MoveEnemy();
-            yield return new WaitForSeconds(0.1f);
-        }
+    //    for (int i = 0; i < enemies.Count; i++)
+    //    {
+    //        enemies[i].MoveEnemy();
+    //        yield return new WaitForSeconds(0.1f);
+    //    }
 
-        enemyTurn = false;
-        playerTurn = true;
-    }
+    //    enemyTurn = false;
+    //    playerTurn = true;
+    //}
 
     public void GameOver()
     {
