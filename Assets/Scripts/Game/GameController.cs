@@ -53,6 +53,8 @@ public class GameController : MonoBehaviour
         player.OnGameOver += GameOver;
         player.OnGoal += Restart;
 
+        Debug.Log($"現在のステージ：{player.Status.currentStage}");
+
         state = GameState.Idle;
         statusUPSelection.gameObject.SetActive(false);
         inventoryUI.gameObject.SetActive(false);
@@ -97,7 +99,6 @@ public class GameController : MonoBehaviour
     // Idle時の処理
     void HandleUpdateIdle()
     {
-
         player.HandleUpdate();
 
         if (Input.GetKeyDown(KeyCode.I))
@@ -269,6 +270,7 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         string currentScene = SceneManager.GetActiveScene().name;
+        player.Status.currentStage++;
         SceneManager.LoadScene(currentScene);
     }
 }
