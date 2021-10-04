@@ -683,7 +683,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &294878291
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1337,7 +1337,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &638264618
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2011,7 +2011,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &952261081
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2593,9 +2593,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   enemyHp: 5
-  hpText: {fileID: 294878292}
   enemyAt: 2
-  atText: {fileID: 638264619}
 --- !u!1001 &1391447604
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2759,9 +2757,7 @@ MonoBehaviour:
   blockingLayer:
     serializedVersion: 2
     m_Bits: 256
-  hpText: {fileID: 1486763198}
   playerAt: 1
-  atText: {fileID: 952261082}
 --- !u!61 &1431115166
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2893,7 +2889,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1486763197
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3972,7 +3968,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2128034945
 MonoBehaviour:
   m_ObjectHideFlags: 0
