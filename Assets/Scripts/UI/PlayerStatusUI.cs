@@ -15,6 +15,6 @@ public class PlayerStatusUI : MonoBehaviour
     public void SetData(int hp, int at)
     {
         hpText.text = $"HP:{hp}";
-        atText.text = $"HP:{at}";
+        atText.text = $"AT:{at}";
     }
 }
