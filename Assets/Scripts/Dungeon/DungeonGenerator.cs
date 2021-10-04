@@ -525,11 +525,11 @@ public class DungeonGenerator : MonoBehaviour
     {
         return (room.RoomGrind.x <= xgrid && xgrid <= room.RoomGrind.x + room.range.width-1) &&
             (room.RoomGrind.y <= zgrid && zgrid <= room.RoomGrind.y + room.range.height-1);
-        int sx = room.RoomGrind.x + room.range.left;
-        int ex = sx + room.range.right;
-        int sz = room.RoomGrind.y + room.range.top;
-        int ez = sz + room.range.bottom;
-        return xgrid >= sx && xgrid <= ex && zgrid >= sz && zgrid <= ez;
+        //int sx = room.RoomGrind.x + room.range.left;
+        //int ex = sx + room.range.right;
+        //int sz = room.RoomGrind.y + room.range.top;
+        //int ez = sz + room.range.bottom;
+        //return xgrid >= sx && xgrid <= ex && zgrid >= sz && zgrid <= ez;
     }
     public ObjectPosition GetInRoom(int xgrid, int zgrid)
     {
