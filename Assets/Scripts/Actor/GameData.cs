@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
-    [SerializeField] PlayerStatus playerStatus;
+    PlayerStatus playerStatus;
     public PlayerStatus PlayerStatus { get => playerStatus; set => playerStatus = value; } // 公開用
 
 
