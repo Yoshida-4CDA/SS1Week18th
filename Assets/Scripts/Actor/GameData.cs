@@ -28,7 +28,11 @@ public class PlayerStatus
 {
     public int level;
     public int hp;
+    public int maxHP;
     public int at;
     public int exp;
     public int currentStage;
+    public int levelUPExp;   // この経験値以上になったらレベルアップ
+
+    public bool IsLevelUP { get => exp >= levelUPExp; }
 }

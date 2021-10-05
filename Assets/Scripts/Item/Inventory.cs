@@ -20,5 +20,16 @@ public class Inventory : MonoBehaviour
 [System.Serializable]
 public class Item
 {
-    public string Name;
+    [SerializeField] ItemBase _base;
+    public string Name { get => _base.Name; }
+
+    public void Use(Player player)
+    {
+        switch (_base.Type)
+        {
+            case ItemType.HPHeal:
+                player.Heal(_base.Amount);
+                break;
+        }
+    }
 }

@@ -28,12 +28,14 @@ public class Player : MonoBehaviour
         boxCollider2D = GetComponent<BoxCollider2D>();
 
         status.level = GameData.instance.PlayerStatus.level;
+        status.maxHP = GameData.instance.PlayerStatus.maxHP;
         status.hp = GameData.instance.PlayerStatus.hp;
         status.at = GameData.instance.PlayerStatus.at;
         status.exp = GameData.instance.PlayerStatus.exp;
         status.currentStage = GameData.instance.PlayerStatus.currentStage;
+        status.levelUPExp = GameData.instance.PlayerStatus.levelUPExp;
 
-        Debug.Log($"PlayerのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
+        // Debug.Log($"PlayerのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
     }
 
     public void HandleUpdate()
@@ -143,6 +145,8 @@ public class Player : MonoBehaviour
         {
             // status.hp += GameData.instance.itemPoint;
             Debug.Log($"PlayerのHP：{status.hp}");
+            ItemObj itemObj = collision.GetComponent<ItemObj>();
+            GameData.instance.GetComponent<Inventory>().List.Add(itemObj.Item);
             collision.gameObject.SetActive(false);
         }
         if (collision.gameObject.CompareTag("Finish"))
@@ -177,6 +181,31 @@ public class Player : MonoBehaviour
     public void AddExp(int exp)
     {
         status.exp += exp;
-        Debug.Log($"経験値{exp}を得た\n現在の経験値：{status.exp}");
+        // Debug.Log($"経験値{exp}を得た\n現在の経験値：{status.exp}");
+    }
+
+    public void LevelUP()
+    {
+        if (status.IsLevelUP)
+        {
+            status.exp -= status.levelUPExp;
+            status.level++;
+            // Debug.Log($"レベルが{status.level}になった");
+        }
+    }
+
+    public void StatusUpMaxHP(int amount)
+    {
+        status.maxHP += amount;
+        status.hp += amount;
+    }
+    public void StatusUpAT(int amount)
+    {
+        status.at += amount;
+    }
+    public void Heal(int amount)
+    {
+        status.hp += amount;
+        status.hp = Mathf.Clamp(status.hp, 0, status.maxHP);
     }
 }

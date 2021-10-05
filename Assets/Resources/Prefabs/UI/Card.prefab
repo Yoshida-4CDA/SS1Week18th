@@ -290,7 +290,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52131a16d57964e0d90360881373a1b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  text: {fileID: 3178581115634574015}
   hilightPanel: {fileID: 3178581116111857543}
+  type: 0
+  amount: 0
 --- !u!1 &3178581117457348995
 GameObject:
   m_ObjectHideFlags: 0
