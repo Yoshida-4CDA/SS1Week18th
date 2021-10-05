@@ -32,8 +32,25 @@ public class Enemy : MonoBehaviour
         int xDir = 0;
         int yDir = 0;
 
+        // TODO:Enemyの移動修正
+        /*
+         PlayerとEnemyが・・・
+
+            ＊同じX軸にいるなら => 上下どちらかにY軸を動かす
+            ＊違うX軸にいるなら => 左右どちらかにX軸を動かす
+
+            ＊同じY軸にいるなら => 左右どちらかにX軸を動かす
+            ＊違うY軸にいるなら => 上下どちらかにY軸を動かす
+
+            ということは・・・
+
+                ＊X軸を動かすとき => 違うX軸 or 同じY軸
+                ＊Y軸を動かすとき => 同じX軸 or 違うY軸
+         */
+
         // Playerと同じx軸にいるかどうかを判定
-        if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon)
+        if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon ||
+            Mathf.Abs(target.position.y - transform.position.y) >= float.Epsilon)
         {
             // y軸を動かす(PlayerがEnemyより高い位置にいるなら上/低い位置にいるなら下に移動する)
             if (target.transform.position.y > transform.position.y)
@@ -45,7 +62,8 @@ public class Enemy : MonoBehaviour
                 yDir = -1;
             }
         }
-        else
+        else if (Mathf.Abs(target.position.x - transform.position.x) >= float.Epsilon ||
+                 Mathf.Abs(target.position.y - transform.position.y) < float.Epsilon)
         {
             // x軸を動かす(PlayerがEnemyより高い位置にいるなら右/低い位置にいるなら左に移動する)
             if (target.transform.position.x > transform.position.x)
