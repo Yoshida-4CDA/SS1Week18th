@@ -9,6 +9,7 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField] DungeonPrefabs dungeonPrefabs;
     [SerializeField] AutoMapping autoMapping;
     [SerializeField] Transform rooms;
+    [SerializeField] Transform stage;
     [SerializeField] Transform enemysParent;
     [SerializeField] Canvas canvas;
 
@@ -147,13 +148,13 @@ public class DungeonGenerator : MonoBehaviour
                     // 壁生成
                     float x = GetChipX(i);
                     float y = GetChipY(j);
-                    GameObject wallObj = Instantiate(dungeonPrefabs.Wall, new Vector3(x, y), Quaternion.identity);
+                    GameObject wallObj = Instantiate(dungeonPrefabs.Wall, new Vector3(x, y), Quaternion.identity, stage);
                 }
                 else if (mapData2D.Get(i, j) == CHIP_ROAD)
                 {
                     float x = GetChipX(i);
                     float y = GetChipY(j);
-                    GameObject roadObj = Instantiate(dungeonPrefabs.Road, new Vector3(x, y), Quaternion.identity);
+                    GameObject roadObj = Instantiate(dungeonPrefabs.Road, new Vector3(x, y), Quaternion.identity, stage);
                     // roadObj.GetComponent<ObjectPosition>().SetRange(0, 0, 1, 1);// TODO:部屋の情報
                     // ObjectPosition objectPosition = Instantiate(dungeonPrefabs.Room, rooms);
                     // roadObj.GetComponent<ObjectPosition>().SetPosition(i, j);
@@ -374,7 +375,7 @@ public class DungeonGenerator : MonoBehaviour
             r_x = Random.Range(left, right);
             r_y = Random.Range(top, bottom);
         }
-        Instantiate(dungeonPrefabs.Herb, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity);
+        Instantiate(dungeonPrefabs.Herb, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity, stage);
     }
 
 

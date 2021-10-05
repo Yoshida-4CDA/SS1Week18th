@@ -205,7 +205,7 @@ public class GameController : MonoBehaviour
     void RemoveEnemy(Enemy enemy)
     {
         enemies.Remove(enemy);
-        player.AddExp(enemy.enemyExp);
+        player.AddExp(enemy.Exp);
     }
 
     // TODO:Playerと重なるバグ修正

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [CreateAssetMenu]//Createメニューから作成できるようする属性
 public class ParamsSO : ScriptableObject
@@ -32,4 +33,6 @@ public class ParamsSO : ScriptableObject
 
     //保存されているデータ
     public PlayerStatus initPlayerStatus;
+    // 敵の強さ
+    public List<EnemyStatus> initEnemyStatusList = new List<EnemyStatus>();
 }

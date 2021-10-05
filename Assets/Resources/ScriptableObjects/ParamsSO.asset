@@ -20,3 +20,9 @@ MonoBehaviour:
     exp: 0
     currentStage: 1
     levelUPExp: 12
+  initEnemyStatusList:
+  - level: 1
+    name: "\u30D0\u30AF"
+    hp: 5
+    at: 2
+    exp: 2
