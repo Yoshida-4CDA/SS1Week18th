@@ -53,6 +53,8 @@ public class Enemy : MonoBehaviour
             Mathf.Abs(target.position.y - transform.position.y) >= float.Epsilon)
         {
             // y軸を動かす(PlayerがEnemyより高い位置にいるなら上/低い位置にいるなら下に移動する)
+            yDir = target.transform.position.y > transform.position.y ? 1 : -1;
+            /*
             if (target.transform.position.y > transform.position.y)
             {
                 yDir = 1;
@@ -61,11 +63,23 @@ public class Enemy : MonoBehaviour
             {
                 yDir = -1;
             }
+            */
         }
         else if (Mathf.Abs(target.position.x - transform.position.x) >= float.Epsilon ||
                  Mathf.Abs(target.position.y - transform.position.y) < float.Epsilon)
         {
             // x軸を動かす(PlayerがEnemyより高い位置にいるなら右/低い位置にいるなら左に移動する)
+            xDir = target.transform.position.x > transform.position.x ? 1 : -1;
+            switch (xDir)
+            {
+                case 1:
+                    transform.localScale = new Vector3(-1, 1, 1);
+                    break;
+                case -1:
+                    transform.localScale = new Vector3(1, 1, 1);
+                    break;
+            }
+            /*
             if (target.transform.position.x > transform.position.x)
             {
                 xDir = 1;
@@ -76,6 +90,7 @@ public class Enemy : MonoBehaviour
                 xDir = -1;
                 transform.localScale = new Vector3(1, 1, 1);
             }
+            */
         }
         return ATMove(xDir, yDir);
     }
