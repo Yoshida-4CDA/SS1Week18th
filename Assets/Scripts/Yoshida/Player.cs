@@ -75,7 +75,7 @@ public class Player : MonoBehaviour
     {
         RaycastHit2D hit;
 
-        // Move関数を呼んでRayを飛ばす => あとあと使うかも?
+        // Move関数を呼んでRayを飛ばす
         bool canMove = Move(x, y, out hit);
 
         // Rayにぶつかるものが無ければ移動できる

@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class Enemy : MonoBehaviour
 {
     [Header("移動中かどうかを判別する変数")]
-    [SerializeField] bool isMoving;
+    public bool isMoving;
 
     BoxCollider2D boxCollider2D;
     [SerializeField] LayerMask blockingLayer;
@@ -27,26 +27,25 @@ public class Enemy : MonoBehaviour
         Debug.Log($"EnemyのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
     }
 
+    // TODO:Enemyの移動修正
+    /*
+     PlayerとEnemyが・・・
+
+        ＊同じX軸にいるなら => 上下どちらかにY軸を動かす
+        ＊違うX軸にいるなら => 左右どちらかにX軸を動かす
+
+        ＊同じY軸にいるなら => 左右どちらかにX軸を動かす
+        ＊違うY軸にいるなら => 上下どちらかにY軸を動かす
+
+        ということは・・・
+
+            ＊X軸を動かすとき => 違うX軸 or 同じY軸
+            ＊Y軸を動かすとき => 同じX軸 or 違うY軸
+     */
     public bool MoveEnemy()
     {
         int xDir = 0;
         int yDir = 0;
-
-        // TODO:Enemyの移動修正
-        /*
-         PlayerとEnemyが・・・
-
-            ＊同じX軸にいるなら => 上下どちらかにY軸を動かす
-            ＊違うX軸にいるなら => 左右どちらかにX軸を動かす
-
-            ＊同じY軸にいるなら => 左右どちらかにX軸を動かす
-            ＊違うY軸にいるなら => 上下どちらかにY軸を動かす
-
-            ということは・・・
-
-                ＊X軸を動かすとき => 違うX軸 or 同じY軸
-                ＊Y軸を動かすとき => 同じX軸 or 違うY軸
-         */
 
         // Playerと同じx軸にいるかどうかを判定
         if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon ||
@@ -54,44 +53,30 @@ public class Enemy : MonoBehaviour
         {
             // y軸を動かす(PlayerがEnemyより高い位置にいるなら上/低い位置にいるなら下に移動する)
             yDir = target.transform.position.y > transform.position.y ? 1 : -1;
-            /*
-            if (target.transform.position.y > transform.position.y)
-            {
-                yDir = 1;
-            }
-            else
-            {
-                yDir = -1;
-            }
-            */
+
+            // 上下移動が出来ないなら左右に移動する => 壁にぶつかってるかどうか判定する -> どうやって？
+            // xDir = target.transform.position.x > transform.position.x ? 1 : -1;
         }
         else if (Mathf.Abs(target.position.x - transform.position.x) >= float.Epsilon ||
                  Mathf.Abs(target.position.y - transform.position.y) < float.Epsilon)
         {
             // x軸を動かす(PlayerがEnemyより高い位置にいるなら右/低い位置にいるなら左に移動する)
             xDir = target.transform.position.x > transform.position.x ? 1 : -1;
-            switch (xDir)
-            {
-                case 1:
-                    transform.localScale = new Vector3(-1, 1, 1);
-                    break;
-                case -1:
-                    transform.localScale = new Vector3(1, 1, 1);
-                    break;
-            }
-            /*
-            if (target.transform.position.x > transform.position.x)
-            {
-                xDir = 1;
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
-            else
-            {
-                xDir = -1;
-                transform.localScale = new Vector3(1, 1, 1);
-            }
-            */
+
+            // 左右移動が出来ないなら上下に移動する => 壁にぶつかってるかどうか判定する -> どうやって？
+            // yDir = target.transform.position.y > transform.position.y ? 1 : -1;
         }
+
+        switch (xDir)
+        {
+            case 1:
+                transform.localScale = new Vector3(-1, 1, 1);
+                break;
+            case -1:
+                transform.localScale = new Vector3(1, 1, 1);
+                break;
+        }
+        
         return ATMove(xDir, yDir);
     }
 
@@ -99,7 +84,7 @@ public class Enemy : MonoBehaviour
     {
         RaycastHit2D hit;
 
-        // Move関数を呼んでRayを飛ばす => あとあと使うかも?
+        // Move関数を呼んでRayを飛ばす
         bool canMove = Move(x, y, out hit);
 
         // Rayにぶつかるものが無ければ移動できる

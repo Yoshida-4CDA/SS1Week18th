@@ -212,13 +212,13 @@ public class GameController : MonoBehaviour
     }
 
     // TODO:Playerと重なるバグ修正
-    IEnumerator MoveEnemies()   
+    IEnumerator MoveEnemies()
     {
-        // yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.1f);
 
         if (enemies.Count == 0)
         {
-            yield return new WaitForSeconds(0.1f);
+            // yield return new WaitForSeconds(0.1f);
         }
 
         for (int i = 0; i < enemies.Count; i++)
@@ -230,7 +230,23 @@ public class GameController : MonoBehaviour
             }
             playerStatusUI.SetData(player.Status);
         }
+        while (ChechEnemyTurnEnd())
+        {
+            yield return null;
+        }
         state = GameState.End;
+    }
+
+    bool ChechEnemyTurnEnd()
+    {
+        foreach (Enemy enemy in enemies)
+        {
+            if (enemy.isMoving)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // インベントリを開いてる時の処理
