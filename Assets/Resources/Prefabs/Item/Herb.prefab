@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5702073714817221974}
   - component: {fileID: 5702073714817221975}
   - component: {fileID: 5702073714817221973}
+  - component: {fileID: 2158335677487737853}
   m_Layer: 0
   m_Name: Herb
   m_TagString: Item
@@ -109,3 +110,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2158335677487737853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5702073714817221976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d0934c545b2a4e38bd9289217a2d849, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item:
+    _base: {fileID: 11400000, guid: 9c140b5afe01743a487d2a8f4841c4cf, type: 2}

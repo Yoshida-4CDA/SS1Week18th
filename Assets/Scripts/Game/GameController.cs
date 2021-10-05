@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
         PlayerMove,
         EnemyTurn,
         Busy,
+        CheckLevelUP,
         StatusUPSelection,
         End,
     }
@@ -25,9 +26,9 @@ public class GameController : MonoBehaviour
     [SerializeField] DungeonGenerator dungeonGenerator;
     [SerializeField] PlayerStatusUI playerStatusUI;
 
-    [SerializeField] Inventory inventory;
+    Inventory inventory;
 
-    GameState state;
+    [SerializeField] GameState state;
 
     int currentItemSlot;
     int currentStatusUPIndex;
@@ -37,6 +38,7 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        inventory = GameData.instance.GetComponent<Inventory>();
         dungeonGenerator.Init();
         player = dungeonGenerator.Player.GetComponent<Player>();
         player.Init();
@@ -53,7 +55,6 @@ public class GameController : MonoBehaviour
         player.OnGameOver += GameOver;
         player.OnGoal += Restart;
 
-        Debug.Log($"現在のステージ：{player.Status.currentStage}");
 
         state = GameState.Idle;
         statusUPSelection.gameObject.SetActive(false);
@@ -84,6 +85,10 @@ public class GameController : MonoBehaviour
             case GameState.PlayerMove:
                 HandleUpdatePlayerMove();
                 break;
+            case GameState.CheckLevelUP:
+                HandleUpdateCheckLevelUP();
+                break;
+
             case GameState.EnemyTurn:
                 HandleUpdateEnemyTurn();
                 break;
@@ -118,6 +123,24 @@ public class GameController : MonoBehaviour
     void HandleUpdatePlayerMove()
     {
     }
+    void HandleUpdateCheckLevelUP()
+    {
+        if (state != GameState.Busy)
+        {
+            if (player.Status.IsLevelUP)
+            {
+                state = GameState.StatusUPSelection;
+                player.LevelUP();
+                playerStatusUI.SetData(player.Status);
+                OpenStatusSelectionUI();
+            }
+            else
+            {
+                state = GameState.EnemyTurn;
+            }
+        }
+    }
+
     void HandleUpdateEnemyTurn()
     {
         state = GameState.Busy;
@@ -133,10 +156,11 @@ public class GameController : MonoBehaviour
 
     void PlayerEnd()
     {
+        // Debug.Log("PlayerEnd");
         // GameState.BusyだったらBusyのまま, そうじゃないなら敵のターン
         if (state != GameState.Busy)
         {
-            state = GameState.EnemyTurn;
+            state = GameState.CheckLevelUP;
         }
     }
 
@@ -188,8 +212,11 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             // 決定
-            messageUI.SetMessage($"羊は{inventory.List[currentItemSlot].Name}を使った!");
-            inventory.Use(currentItemSlot);
+            Item selectedItem = inventory.List[currentItemSlot];
+            messageUI.SetMessage($"羊は{selectedItem.Name}を使った!");
+            selectedItem.Use(player);
+            inventory.List.Remove(selectedItem);
+            playerStatusUI.SetData(player.Status);
             CloseInventory();
         }
         else if (Input.GetKeyDown(KeyCode.X))
@@ -223,15 +250,14 @@ public class GameController : MonoBehaviour
         {
             currentStatusUPIndex--;
         }
-        currentStatusUPIndex = Mathf.Clamp(currentStatusUPIndex, 0, inventory.List.Count - 1);
-
+        currentStatusUPIndex = Mathf.Clamp(currentStatusUPIndex, 0, statusUPSelection.StatusUPCards.Length - 1);
+        Debug.Log("HandleStatusUPSelection" + currentStatusUPIndex);
         statusUPSelection.UpdateCardSelection(currentStatusUPIndex);
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             StatusUPCard selectedCard = statusUPSelection.StatusUPCards[currentStatusUPIndex];
-            // messageUI.SetMessage($"{inventory.List[currentItemSlot].Name}を使った!");
-            // inventory.Use(currentItemSlot);
+            selectedCard.UseCard(player);
             CloseStatusSelectionUI();
         }
         else if (Input.GetKeyDown(KeyCode.X))
@@ -242,21 +268,21 @@ public class GameController : MonoBehaviour
 
     void OpenStatusSelectionUI()
     {
+        Debug.Log("OpenStatusSelectionUI");
         state = GameState.StatusUPSelection;
         currentStatusUPIndex = 0;
         // UI表示
         statusUPSelection.gameObject.SetActive(true);
-        // inventoryUI.SetInventorySlots(inventory);
+        statusUPSelection.UpdateCardSelection(currentStatusUPIndex);
     }
     void CloseStatusSelectionUI()
     {
-        state = GameState.Idle;
+        state = GameState.EnemyTurn;
         statusUPSelection.gameObject.SetActive(false);
     }
 
     void GameOver()
     {
-        Debug.Log("ゲームオーバー");
         // enabled = false;
         state = GameState.Busy;
     }

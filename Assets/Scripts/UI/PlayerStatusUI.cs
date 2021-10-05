@@ -7,10 +7,16 @@ public class PlayerStatusUI : MonoBehaviour
 {
     [SerializeField] Text hpText = default;
     [SerializeField] Text atText = default;
+    [SerializeField] Text expText = default;
+    [SerializeField] Text levelText = default;
+    [SerializeField] Text stageText = default;
 
     public void SetData(PlayerStatus playerStatus)
     {
-        hpText.text = $"HP:{playerStatus.hp}";
+        hpText.text = $"HP:{playerStatus.hp}/{playerStatus.maxHP}";
         atText.text = $"AT:{playerStatus.at}";
+        expText.text = $"EXP:{playerStatus.exp}";
+        levelText.text = $"LV:{playerStatus.level}";
+        stageText.text = $"STAGE:{playerStatus.currentStage}";
     }
 }
