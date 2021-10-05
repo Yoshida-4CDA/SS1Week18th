@@ -12,20 +12,19 @@ public class Enemy : MonoBehaviour
     [SerializeField] LayerMask blockingLayer;
     Transform target;               // プレイヤー(target)の座標
 
-    [SerializeField] int enemyHp;   // EnemyのHP
-    [SerializeField] int enemyAt;   // EnemyのAT
-    public int enemyExp;            // Enemyの経験値
+    EnemyStatus status = new EnemyStatus();
 
     public UnityAction<Enemy> OnDestroyEnemy;
 
-    public int HP { get => enemyHp; }
-
+    public int HP { get => status.hp; }
+    public int Exp { get => status.exp; }
 
     void Start()
     {
+        status.Set(ParamsSO.Entity.initEnemyStatusList[0]);
         boxCollider2D = GetComponent<BoxCollider2D>();
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
-        Debug.Log($"EnemyのHP：{enemyHp}　AT：{enemyAt}　経験値：{enemyExp}");
+        Debug.Log($"EnemyのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
     }
 
     public bool MoveEnemy()
@@ -134,19 +133,38 @@ public class Enemy : MonoBehaviour
     void OnCantMove(Player player)
     {
         Debug.Log("Enemyの攻撃");
-        player.PlayerDamage(enemyAt);
+        player.PlayerDamage(status.at);
     }
 
     public void EnemyDamage(int damage)
     {
-        enemyHp -= damage;
-        Debug.Log($"EnemyのHP：{enemyHp}");
+        status.hp -= damage;
+        Debug.Log($"EnemyのHP：{status.hp}");
 
-        if (enemyHp <= 0)
+        if (status.hp <= 0)
         {
             Debug.Log("Enemyを倒した");
             OnDestroyEnemy?.Invoke(this);
             gameObject.SetActive(false);
         }
+    }
+}
+
+[System.Serializable]
+public class EnemyStatus
+{
+    public int level; // だんだん強くなるといいなぁ
+    public string name;
+    public int hp;
+    public int at; 
+    public int exp;
+
+    public void Set(EnemyStatus status)
+    {
+        level = status.level;
+        name = status.name;
+        hp = status.hp;
+        at = status.at; 
+        exp = status.at;
     }
 }

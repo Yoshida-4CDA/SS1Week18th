@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     public UnityAction OnPlayerTurnEnd;
     public UnityAction OnGameOver;
     public UnityAction OnGoal;
+    public UnityAction<ItemObj> OnItem;
 
 
     public PlayerStatus Status { get => status; }
@@ -146,8 +147,7 @@ public class Player : MonoBehaviour
             // status.hp += GameData.instance.itemPoint;
             Debug.Log($"PlayerのHP：{status.hp}");
             ItemObj itemObj = collision.GetComponent<ItemObj>();
-            GameData.instance.GetComponent<Inventory>().List.Add(itemObj.Item);
-            collision.gameObject.SetActive(false);
+            OnItem?.Invoke(itemObj);
         }
         if (collision.gameObject.CompareTag("Finish"))
         {
@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
     {
         status.hp -= damage;
         CheckHP();
-        Debug.Log($"PlayerのHP：{status.hp}");
+        // Debug.Log($"PlayerのHP：{status.hp}");
     }
 
     void OnDisable()
@@ -174,7 +174,7 @@ public class Player : MonoBehaviour
         if (status.hp <= 0)
         {
             OnGameOver();
-            gameObject.SetActive(false);
+            // gameObject.SetActive(false);
         }
     }
 

@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
         Busy,
         CheckLevelUP,
         StatusUPSelection,
+        GameOver,
         End,
     }
 
@@ -25,6 +26,7 @@ public class GameController : MonoBehaviour
     [SerializeField] StatusUPSelection statusUPSelection;
     [SerializeField] DungeonGenerator dungeonGenerator;
     [SerializeField] PlayerStatusUI playerStatusUI;
+    [SerializeField] GoalMessage goalMessageUI;
 
     Inventory inventory;
 
@@ -32,6 +34,7 @@ public class GameController : MonoBehaviour
 
     int currentItemSlot;
     int currentStatusUPIndex;
+    int currentResult;
 
     Player player;
     List<Enemy> enemies;
@@ -54,6 +57,7 @@ public class GameController : MonoBehaviour
         player.OnPlayerTurnEnd += PlayerEnd;
         player.OnGameOver += GameOver;
         player.OnGoal += Restart;
+        player.OnItem += OnItem;
 
 
         state = GameState.Idle;
@@ -88,7 +92,6 @@ public class GameController : MonoBehaviour
             case GameState.CheckLevelUP:
                 HandleUpdateCheckLevelUP();
                 break;
-
             case GameState.EnemyTurn:
                 HandleUpdateEnemyTurn();
                 break;
@@ -97,6 +100,9 @@ public class GameController : MonoBehaviour
                 break;
             case GameState.End:
                 HandleUpdateEnd();
+                break;
+            case GameState.GameOver:
+                HandleUpdateGameOver();
                 break;
         }
     }
@@ -154,20 +160,52 @@ public class GameController : MonoBehaviour
         state = GameState.Idle;
     }
 
+    void HandleUpdateGameOver()
+    {
+        // 方向キーでアイテム選択
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            currentResult++;
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            currentResult--;
+        }
+        currentResult = Mathf.Clamp(currentResult, 0, 2);
+        goalMessageUI.HandleUpdateSelection(currentResult);
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            // TODO:ランキング中に処理されそう
+            if (currentResult == 0)
+            {
+                ResetStart();
+            }
+            else if(currentResult == 1)
+            {
+                GoToTitle();
+            }
+        }
+    }
+
     void PlayerEnd()
     {
         // Debug.Log("PlayerEnd");
         // GameState.BusyだったらBusyのまま, そうじゃないなら敵のターン
-        if (state != GameState.Busy)
+        switch (state)
         {
-            state = GameState.CheckLevelUP;
+            case GameState.Busy:
+            case GameState.GameOver:
+                break;
+            default:
+                state = GameState.CheckLevelUP;
+                break;
         }
     }
 
     void RemoveEnemy(Enemy enemy)
     {
         enemies.Remove(enemy);
-        player.AddExp(enemy.enemyExp);
+        player.AddExp(enemy.Exp);
     }
 
     // TODO:Playerと重なるバグ修正
@@ -177,7 +215,7 @@ public class GameController : MonoBehaviour
 
         if (enemies.Count == 0)
         {
-            // yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.1f);
         }
 
         for (int i = 0; i < enemies.Count; i++)
@@ -185,7 +223,7 @@ public class GameController : MonoBehaviour
             bool attacked = enemies[i].MoveEnemy();
             if (attacked)
             {
-                yield return new WaitForSeconds(0.1f);
+                // yield return new WaitForSeconds(0.1f);
             }
             playerStatusUI.SetData(player.Status);
         }
@@ -209,7 +247,7 @@ public class GameController : MonoBehaviour
         // 選んだものに色をつける
         inventoryUI.UpdateInventorySelection(currentItemSlot);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && inventory.List.Count > 0)
         {
             // 決定
             Item selectedItem = inventory.List[currentItemSlot];
@@ -260,10 +298,6 @@ public class GameController : MonoBehaviour
             selectedCard.UseCard(player);
             CloseStatusSelectionUI();
         }
-        else if (Input.GetKeyDown(KeyCode.X))
-        {
-            CloseStatusSelectionUI();
-        }
     }
 
     void OpenStatusSelectionUI()
@@ -281,20 +315,54 @@ public class GameController : MonoBehaviour
         statusUPSelection.gameObject.SetActive(false);
     }
 
+    void OnItem(ItemObj itemObj)
+    {
+        if (inventory.List.Count >= Inventory.MAX)
+        {
+            messageUI.SetMessage("持ち物がいっぱいだ");
+        }
+        else
+        {
+            inventory.List.Add(itemObj.Item);
+            itemObj.gameObject.SetActive(false);
+        }
+    }
     void GameOver()
     {
         // enabled = false;
-        state = GameState.Busy;
+        state = GameState.GameOver;
+        StartCoroutine(DelayGameOver());
     }
+    IEnumerator DelayGameOver()
+    {
+        yield return new WaitForSeconds(1f);
+        goalMessageUI.ShowResult(player.Status.currentStage);
+    }
+
     void Restart()
     {
         state = GameState.Busy;
         StartCoroutine(DelayRestart());
     }
 
+    void ResetStart()
+    {
+        Destroy(GameData.instance.gameObject);
+        string currentScene = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentScene);
+    }
+
+    void GoToTitle()
+    {
+        Destroy(GameData.instance.gameObject);
+        SceneManager.LoadScene("Title");
+    }
+
     IEnumerator DelayRestart()
     {
         yield return new WaitForSeconds(1f);
+        goalMessageUI.SetSleepTime(player.Status.currentStage);
+        yield return new WaitForSeconds(2f);
         string currentScene = SceneManager.GetActiveScene().name;
         player.Status.currentStage++;
         SceneManager.LoadScene(currentScene);
