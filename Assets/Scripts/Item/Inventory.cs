@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+    public const int MAX = 3;
     [SerializeField] List<Item> list;
 
     public List<Item> List

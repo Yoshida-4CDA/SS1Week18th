@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0856e20be48d3408d8bd125d9d63607f, type: 3}
+  m_Name: ParamsSO
+  m_EditorClassIdentifier: 
+  initPlayerStatus:
+    level: 1
+    hp: 10
+    maxHP: 10
+    at: 2
+    exp: 0
+    currentStage: 1
+    levelUPExp: 12

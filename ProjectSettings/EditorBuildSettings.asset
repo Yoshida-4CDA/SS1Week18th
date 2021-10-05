@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/YoshidaTest.unity
     guid: 15fca3030462937449b53424a964178c
+  - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: 2a11899d2efc5487a86e1a12ee4ef34a
+  - enabled: 1
+    path: Assets/Scenes/Main.unity
+    guid: 89bd2bf0fe6454430b180310c093ac77
   m_configObjects: {}

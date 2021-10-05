@@ -20,7 +20,7 @@ public class InventoryUI : MonoBehaviour
             }
             else
             {
-                itemSlots[i].SetData("");
+                itemSlots[i].SetData("--");
             }
         }
     }

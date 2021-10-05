@@ -14,6 +14,7 @@ public class GameData : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            playerStatus = ParamsSO.Entity.initPlayerStatus;
             DontDestroyOnLoad(gameObject);
         }
         else
