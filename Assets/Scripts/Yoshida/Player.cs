@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     int axisX;
     int axisY;
 
+    // public bool canMove;
+
     BoxCollider2D boxCollider2D;
     [SerializeField] LayerMask blockingLayer;
 

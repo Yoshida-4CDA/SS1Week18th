@@ -125,10 +125,13 @@ public class GameController : MonoBehaviour
 
     void HandleUpdatePlayerAttack()
     {
+        Debug.Log("PlayerAttack");
     }
     void HandleUpdatePlayerMove()
     {
+        Debug.Log("PlayerMove");
     }
+
     void HandleUpdateCheckLevelUP()
     {
         if (state != GameState.Busy)
@@ -223,7 +226,7 @@ public class GameController : MonoBehaviour
             bool attacked = enemies[i].MoveEnemy();
             if (attacked)
             {
-                // yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.1f);
             }
             playerStatusUI.SetData(player.Status);
         }
