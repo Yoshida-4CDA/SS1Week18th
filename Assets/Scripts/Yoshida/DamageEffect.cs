@@ -10,7 +10,6 @@ public class DamageEffect : MonoBehaviour
 
     public void ShowDamage(int damage)
     {
-        // text.color = Color.red;
         text.text = damage.ToString();
         text.rectTransform.DOLocalMove(new Vector3(0, 80, 0), 0.3f)
             .SetEase(Ease.OutElastic)
@@ -19,7 +18,6 @@ public class DamageEffect : MonoBehaviour
 
     void DestroyEffect()
     {
-        // Destroy(gameObject, 0.05f);
         text.gameObject.SetActive(false);
     }
 }
