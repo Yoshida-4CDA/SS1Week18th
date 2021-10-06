@@ -21,9 +21,10 @@ public class Player : MonoBehaviour
     // 目的地
     ObjectPosition objectPositionTool;
 
-
     public PlayerStatus Status { get => status; }
     public bool IsMoving { get => isMoving; }
+
+    [SerializeField] GameObject damageCanvasPrefab;
 
     public void Init()
     {
@@ -150,8 +151,16 @@ public class Player : MonoBehaviour
     public void PlayerDamage(int damage)
     {
         status.hp -= damage;
+        SpawnCanvasPrefab(transform.position, damage);
+
         CheckHP();
-        // Debug.Log($"PlayerのHP：{status.hp}");
+    }
+
+    void SpawnCanvasPrefab(Vector2 position, int damage)
+    {
+        GameObject effectObj = Instantiate(damageCanvasPrefab, position, Quaternion.identity);
+        DamageEffect damageEffect = effectObj.GetComponent<DamageEffect>();
+        damageEffect.ShowDamage(damage);
     }
 
     void OnDisable()

@@ -99,9 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMoving: 0
-  blockingLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  damageCanvasPrefab: {fileID: 2401425932815700788, guid: b5bb348a74f11bb40973aba51179f9e9, type: 3}
 --- !u!61 &1642611724524430946
 BoxCollider2D:
   m_ObjectHideFlags: 0
