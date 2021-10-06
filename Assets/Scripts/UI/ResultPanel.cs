@@ -9,7 +9,7 @@ public class ResultPanel : MonoBehaviour
 
     public void SetResult(int time)
     {
-        text.text = $"睡眠時間... {time} 時間経過";
+        text.text = $"睡眠時間... {time-1} 時間経過";
 
     }
 }

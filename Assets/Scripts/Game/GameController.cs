@@ -174,7 +174,7 @@ public class GameController : MonoBehaviour
         {
             currentResult--;
         }
-        currentResult = Mathf.Clamp(currentResult, 0, 2);
+        currentResult = Mathf.Clamp(currentResult, 0, 1);
         goalMessageUI.HandleUpdateSelection(currentResult);
         if(Input.GetKeyDown(KeyCode.Space))
         {
@@ -214,7 +214,7 @@ public class GameController : MonoBehaviour
     // TODO:Playerと重なるバグ修正
     IEnumerator MoveEnemies()
     {
-        yield return new WaitForSeconds(0.1f);
+        // yield return new WaitForSeconds(0.1f);
 
         if (enemies.Count == 0)
         {
@@ -245,6 +245,10 @@ public class GameController : MonoBehaviour
             {
                 return true;
             }
+        }
+        if (player.IsMoving)
+        {
+            return true;
         }
         return false;
     }

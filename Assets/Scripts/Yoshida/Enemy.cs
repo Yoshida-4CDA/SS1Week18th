@@ -19,12 +19,18 @@ public class Enemy : MonoBehaviour
     public int HP { get => status.hp; }
     public int Exp { get => status.exp; }
 
+    ObjectPosition objectPositionTool;
+
+
     void Start()
     {
+        objectPositionTool = GetComponent<ObjectPosition>();
         status.Set(ParamsSO.Entity.initEnemyStatusList[0]);
         boxCollider2D = GetComponent<BoxCollider2D>();
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
         Debug.Log($"EnemyのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
+        objectPositionTool.nextMovePosition = objectPositionTool.Grid;
+
     }
 
     // TODO:Enemyの移動修正
@@ -76,7 +82,6 @@ public class Enemy : MonoBehaviour
                 transform.localScale = new Vector3(1, 1, 1);
                 break;
         }
-        
         return ATMove(xDir, yDir);
     }
 
@@ -88,17 +93,21 @@ public class Enemy : MonoBehaviour
         bool canMove = Move(x, y, out hit);
 
         // Rayにぶつかるものが無ければ移動できる
-        if (hit.transform == null)
-        {
-            return false;
-        }
+        //if (hit.transform == null)
+        //{
+        //    return false;
+        //}
 
-        Player hitComponent = hit.transform.GetComponent<Player>();
-
-        if (!canMove && hitComponent != null)
+        ObjectPosition hitComponent = objectPositionTool.IsOverlapPointNextMove();
+        if (!canMove && hitComponent != null && hitComponent.GetComponent<Player>())
         {
-            OnCantMove(hitComponent);
+            OnCantMove(hitComponent.GetComponent<Player>());
+            objectPositionTool.nextMovePosition = objectPositionTool.Grid;
             return true;
+        }
+        else if (!canMove)
+        {
+            objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         }
         return false;
     }
@@ -115,9 +124,16 @@ public class Enemy : MonoBehaviour
         hit = Physics2D.Linecast(startPos, endPos, blockingLayer);
 
         boxCollider2D.enabled = true;
+        // Debug.Log($"{objectPositionTool.Grid}+{new Vector2Int(x, -y)}");
+        objectPositionTool.nextMovePosition = objectPositionTool.Grid + new Vector2Int(x, -y);
 
         // 何もぶつかるものが無ければ移動できる
-        if (!isMoving && hit.transform == null)
+        //if (!isMoving && hit.transform == null)
+        //{
+        //    StartCoroutine(Movement(endPos));
+        //    return true;
+        //}
+        if (!isMoving && hit.transform == null && objectPositionTool.IsOverlapPointNextMove() == null)
         {
             StartCoroutine(Movement(endPos));
             return true;

@@ -23,8 +23,12 @@ public class Player : MonoBehaviour
     public UnityAction OnGoal;
     public UnityAction<ItemObj> OnItem;
 
+    // 目的地
+    ObjectPosition objectPositionTool;
+
 
     public PlayerStatus Status { get => status; }
+    public bool IsMoving { get => isMoving; }
 
     public void Init()
     {
@@ -37,7 +41,8 @@ public class Player : MonoBehaviour
         status.exp = GameData.instance.PlayerStatus.exp;
         status.currentStage = GameData.instance.PlayerStatus.currentStage;
         status.levelUPExp = GameData.instance.PlayerStatus.levelUPExp;
-
+        objectPositionTool = GetComponent<ObjectPosition>();
+        objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         // Debug.Log($"PlayerのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
     }
 
@@ -66,7 +71,8 @@ public class Player : MonoBehaviour
 
         if (axisX != 0 || axisY != 0)
         {
-            // 移動
+            objectPositionTool.nextMovePosition = objectPositionTool.Grid + new Vector2Int(axisX, -axisY);
+            // 移動先
             ATMove(axisX, axisY);
         }
     }
@@ -79,18 +85,27 @@ public class Player : MonoBehaviour
         bool canMove = Move(x, y, out hit);
 
         // Rayにぶつかるものが無ければ移動できる
-        if (hit.transform == null)
+        //if (hit.transform == null)
+        //{
+        //    // プレイヤーのターン(移動)終了
+        //    OnPlayerTurnEnd();
+        //    return;
+        //}
+
+        // Enemy hitComponent = hit.transform.GetComponent<Enemy>();
+        Enemy hitComponent = null;
+        if (objectPositionTool.IsOverlapPointNextMove() != null)
         {
-            // プレイヤーのターン(移動)終了
-            OnPlayerTurnEnd();
-            return;
+            hitComponent = objectPositionTool.IsOverlapPointNextMove().GetComponent<Enemy>();
         }
-
-        Enemy hitComponent = hit.transform.GetComponent<Enemy>();
-
         if (!canMove && hitComponent != null)
         {
             OnCantMove(hitComponent);
+            objectPositionTool.nextMovePosition = objectPositionTool.Grid;
+        }
+        else if(!canMove)
+        {
+            objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         }
         // プレイヤーのターン(攻撃)終了
         CheckHP();
@@ -111,11 +126,17 @@ public class Player : MonoBehaviour
         boxCollider2D.enabled = true;
 
         // 何もぶつかるものが無ければ移動できる
-        if (!isMoving && hit.transform == null)
+        //if (!isMoving && hit.transform == null)
+        //{
+        //    StartCoroutine(Movement(endPos));
+        //    return true;
+        //}
+        if (!isMoving && !isMoving && hit.transform == null && objectPositionTool.IsOverlapPointNextMove() == null)
         {
             StartCoroutine(Movement(endPos));
             return true;
         }
+        // objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         return false;
     }
 
@@ -210,4 +231,5 @@ public class Player : MonoBehaviour
         status.hp += amount;
         status.hp = Mathf.Clamp(status.hp, 0, status.maxHP);
     }
+
 }
