@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour
 
     ObjectPosition objectPositionTool;
 
+    [SerializeField] GameObject damageCanvasPrefab;
 
     void Start()
     {
@@ -153,12 +154,21 @@ public class Enemy : MonoBehaviour
         status.hp -= damage;
         Debug.Log($"EnemyのHP：{status.hp}");
 
+        SpawnCanvasPrefab(transform.position, damage);
+
         if (status.hp <= 0)
         {
             Debug.Log("Enemyを倒した");
             OnDestroyEnemy?.Invoke(this);
             gameObject.SetActive(false);
         }
+    }
+
+    void SpawnCanvasPrefab(Vector2 position, int damage)
+    {
+        GameObject effectObj = Instantiate(damageCanvasPrefab, position, Quaternion.identity);
+        DamageEffect damageEffect = effectObj.GetComponent<DamageEffect>();
+        damageEffect.ShowDamage(damage);
     }
 }
 
