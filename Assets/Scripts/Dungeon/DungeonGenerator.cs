@@ -89,8 +89,20 @@ public class DungeonGenerator : MonoBehaviour
                 }
             }
         }
-
         return null;
+    }
+
+    public bool IsWall(int i, int j)
+    {
+        return MapData2D.Get(i, j) == CHIP_WALL;
+    }
+    public bool IsWall(float x, float y)
+    {
+        return MapData2D.Get(GetGridX(x), GetGridY(y)) == CHIP_WALL;
+    }
+    public bool IsWall(ObjectPosition obj)
+    {
+        return MapData2D.Get(obj.Grid.x, obj.Grid.y) == CHIP_WALL;
     }
 
     /// チップ上のX座標を取得する:整数値のデータを配置する座標に変換する

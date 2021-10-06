@@ -58,6 +58,11 @@ public class ObjectPosition : MonoBehaviour
     {
         return DungeonGenerator.instance.IsOverlap(this);
     }
+
+    public bool IsWall(Vector2 point)
+    {
+        return DungeonGenerator.instance.IsWall(point.x, point.y);
+    }
 }
 [System.Serializable]
 public class Rect2D

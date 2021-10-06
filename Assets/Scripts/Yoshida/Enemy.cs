@@ -8,8 +8,6 @@ public class Enemy : MonoBehaviour
     [Header("移動中かどうかを判別する変数")]
     public bool isMoving;
 
-    BoxCollider2D boxCollider2D;
-    [SerializeField] LayerMask blockingLayer;
     Transform target;               // プレイヤー(target)の座標
 
     EnemyStatus status = new EnemyStatus();
@@ -26,7 +24,6 @@ public class Enemy : MonoBehaviour
     {
         objectPositionTool = GetComponent<ObjectPosition>();
         status.Set(ParamsSO.Entity.initEnemyStatusList[0]);
-        boxCollider2D = GetComponent<BoxCollider2D>();
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
         Debug.Log($"EnemyのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
         objectPositionTool.nextMovePosition = objectPositionTool.Grid;
@@ -87,17 +84,12 @@ public class Enemy : MonoBehaviour
 
     public bool ATMove(int x, int y)
     {
-        RaycastHit2D hit;
 
         // Move関数を呼んでRayを飛ばす
-        bool canMove = Move(x, y, out hit);
+        bool canMove = Move(x, y);
 
-        // Rayにぶつかるものが無ければ移動できる
-        //if (hit.transform == null)
-        //{
-        //    return false;
-        //}
 
+        // 重なりがあるか?Playerか？
         ObjectPosition hitComponent = objectPositionTool.IsOverlapPointNextMove();
         if (!canMove && hitComponent != null && hitComponent.GetComponent<Player>())
         {
@@ -112,28 +104,14 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public bool Move(int x, int y, out RaycastHit2D hit)
+    public bool Move(int x, int y)
     {
         Vector2 startPos = transform.position;          // プレイヤーの現在位置
         Vector2 endPos = startPos + new Vector2(x, y);  // 移動したい位置
 
-        // 自身のBoxCollider2DにRayが反応してしまわないように一旦falseにする
-        boxCollider2D.enabled = false;
-
-        // Rayを飛ばす(開始位置, 終了位置, 判定するLayer)
-        hit = Physics2D.Linecast(startPos, endPos, blockingLayer);
-
-        boxCollider2D.enabled = true;
-        // Debug.Log($"{objectPositionTool.Grid}+{new Vector2Int(x, -y)}");
         objectPositionTool.nextMovePosition = objectPositionTool.Grid + new Vector2Int(x, -y);
 
-        // 何もぶつかるものが無ければ移動できる
-        //if (!isMoving && hit.transform == null)
-        //{
-        //    StartCoroutine(Movement(endPos));
-        //    return true;
-        //}
-        if (!isMoving && hit.transform == null && objectPositionTool.IsOverlapPointNextMove() == null)
+        if (!isMoving && !objectPositionTool.IsWall(endPos) && objectPositionTool.IsOverlapPointNextMove() == null)
         {
             StartCoroutine(Movement(endPos));
             return true;
