@@ -11,11 +11,6 @@ public class Player : MonoBehaviour
     int axisX;
     int axisY;
 
-    // public bool canMove;
-
-    BoxCollider2D boxCollider2D;
-    [SerializeField] LayerMask blockingLayer;
-
     PlayerStatus status = new PlayerStatus();
 
     public UnityAction OnPlayerTurnEnd;
@@ -32,8 +27,6 @@ public class Player : MonoBehaviour
 
     public void Init()
     {
-        boxCollider2D = GetComponent<BoxCollider2D>();
-
         status.level = GameData.instance.PlayerStatus.level;
         status.maxHP = GameData.instance.PlayerStatus.maxHP;
         status.hp = GameData.instance.PlayerStatus.hp;
@@ -79,20 +72,10 @@ public class Player : MonoBehaviour
 
     public void ATMove(int x, int y)
     {
-        RaycastHit2D hit;
-
         // Move関数を呼んでRayを飛ばす
-        bool canMove = Move(x, y, out hit);
+        bool canMove = Move(x, y);
 
-        // Rayにぶつかるものが無ければ移動できる
-        //if (hit.transform == null)
-        //{
-        //    // プレイヤーのターン(移動)終了
-        //    OnPlayerTurnEnd();
-        //    return;
-        //}
 
-        // Enemy hitComponent = hit.transform.GetComponent<Enemy>();
         Enemy hitComponent = null;
         if (objectPositionTool.IsOverlapPointNextMove() != null)
         {
@@ -112,31 +95,17 @@ public class Player : MonoBehaviour
         OnPlayerTurnEnd();
     }
 
-    public bool Move(int x, int y, out RaycastHit2D hit)
+    public bool Move(int x, int y)
     {
         Vector2 startPos = transform.position;          // プレイヤーの現在位置
         Vector2 endPos = startPos + new Vector2(x, y);  // 移動したい位置
 
-        // 自身のBoxCollider2DにRayが反応してしまわないように一旦falseにする
-        boxCollider2D.enabled = false;
-
-        // Rayを飛ばす(開始位置, 終了位置, 判定するLayer)
-        hit = Physics2D.Linecast(startPos, endPos, blockingLayer);
-
-        boxCollider2D.enabled = true;
-
         // 何もぶつかるものが無ければ移動できる
-        //if (!isMoving && hit.transform == null)
-        //{
-        //    StartCoroutine(Movement(endPos));
-        //    return true;
-        //}
-        if (!isMoving && !isMoving && hit.transform == null && objectPositionTool.IsOverlapPointNextMove() == null)
+        if (!isMoving && !isMoving && !objectPositionTool.IsWall(endPos) && objectPositionTool.IsOverlapPointNextMove() == null)
         {
             StartCoroutine(Movement(endPos));
             return true;
         }
-        // objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         return false;
     }
 
@@ -175,8 +144,6 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Finish"))
         {
             OnGoal?.Invoke();
-            // Invoke("Restart", 1f);
-            // enabled = false;
         }
     }
 
@@ -197,14 +164,12 @@ public class Player : MonoBehaviour
         if (status.hp <= 0)
         {
             OnGameOver();
-            // gameObject.SetActive(false);
         }
     }
 
     public void AddExp(int exp)
     {
         status.exp += exp;
-        // Debug.Log($"経験値{exp}を得た\n現在の経験値：{status.exp}");
     }
 
     public void LevelUP()
@@ -213,7 +178,6 @@ public class Player : MonoBehaviour
         {
             status.exp -= status.levelUPExp;
             status.level++;
-            // Debug.Log($"レベルが{status.level}になった");
         }
     }
 
