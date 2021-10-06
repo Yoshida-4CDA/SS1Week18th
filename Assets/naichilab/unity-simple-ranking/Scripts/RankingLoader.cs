@@ -25,6 +25,7 @@ namespace naichilab
         /// 直前のスコア
         /// </summary>
         [NonSerialized] public IScore LastScore;
+        public bool IsOpeningRanking { get; set; }
 
         #region singleton
 

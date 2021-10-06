@@ -216,6 +216,10 @@ public class GameController : MonoBehaviour
 
     void HandleUpdateGameOver()
     {
+        if (naichilab.RankingLoader.Instance.IsOpeningRanking)
+        {
+            return;
+        }
         // 方向キーでアイテム選択
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
