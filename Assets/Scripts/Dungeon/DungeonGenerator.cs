@@ -39,6 +39,60 @@ public class DungeonGenerator : MonoBehaviour
     public ObjectPosition Player { get => player; }
     public List<ObjectPosition> Enemys { get => enemys; }
 
+    public static DungeonGenerator instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    public ObjectPosition IsOverlap(ObjectPosition obj)
+    {
+        // playerなら
+        if (obj.Grid == player.Grid)
+        {
+            // Debug.Log($"Player{obj.nextMovePosition}");
+            foreach (ObjectPosition enemy in enemys)
+            {
+                if (enemy.gameObject.activeSelf == false)
+                {
+                    continue;
+                }
+                if (enemy.IsOverlapPoint(obj))
+                {
+                    return enemy;
+                }
+            }
+        }
+        else
+        {
+            // Debug.Log($"Player{player.nextMovePosition}");
+            // Debug.Log($"Enemy{obj.nextMovePosition}");
+            if (player.IsOverlapPoint(obj))
+            {
+                return player;
+            }
+            foreach (ObjectPosition enemy in enemys)
+            {
+                if (enemy.gameObject.activeSelf == false)
+                {
+                    continue;
+                }
+
+                if (enemy.Grid == obj.Grid)
+                {
+                    continue;
+                }
+                if (enemy.IsOverlapPoint(obj))
+                {
+                    return enemy;
+                }
+            }
+        }
+
+        return null;
+    }
+
     /// チップ上のX座標を取得する:整数値のデータを配置する座標に変換する
     float GetChipX(int i)
     {

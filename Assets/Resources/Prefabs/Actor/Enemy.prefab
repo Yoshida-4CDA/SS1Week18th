@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1642611724524430946}
   - component: {fileID: 1642611724524430973}
   - component: {fileID: -5682677909539849909}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -102,9 +102,6 @@ MonoBehaviour:
   blockingLayer:
     serializedVersion: 2
     m_Bits: 256
-  enemyHp: 5
-  enemyAt: 2
-  enemyExp: 2
 --- !u!61 &1642611724524430946
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -170,3 +167,4 @@ MonoBehaviour:
     right: 0
     bottom: 0
   RoomGrind: {x: 0, y: 0}
+  nextMovePosition: {x: 0, y: 0}

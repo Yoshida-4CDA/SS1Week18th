@@ -8,6 +8,7 @@ public class ObjectPosition : MonoBehaviour
     // Vector2 grid = new Vector2();
     public Rect2D range = new Rect2D(0, 0, 0, 0);
     public Vector2Int RoomGrind;
+    public Vector2 nextMovePosition;
 
     public Vector2Int Grid
     {
@@ -41,6 +42,21 @@ public class ObjectPosition : MonoBehaviour
         var spr = GetComponent<SpriteRenderer>();
         var sprH = spr.bounds.size.y;
         return Mathf.RoundToInt(-(-max.y + y + sprH / 2) / sprH);
+    }
+
+
+    public bool IsOverlapPoint(ObjectPosition target)
+    {
+        if (Vector2.Distance(nextMovePosition, target.nextMovePosition) < Mathf.Epsilon)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public ObjectPosition IsOverlapPointNextMove()
+    {
+        return DungeonGenerator.instance.IsOverlap(this);
     }
 }
 [System.Serializable]

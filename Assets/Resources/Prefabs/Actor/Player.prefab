@@ -230,7 +230,7 @@ GameObject:
   - component: {fileID: 5902903385068098697}
   - component: {fileID: 5902903385068098696}
   - component: {fileID: 5084758367499796447}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -386,6 +386,7 @@ MonoBehaviour:
     right: 0
     bottom: 0
   RoomGrind: {x: 0, y: 0}
+  nextMovePosition: {x: 0, y: 0}
 --- !u!1 &8644792056197913654
 GameObject:
   m_ObjectHideFlags: 0
