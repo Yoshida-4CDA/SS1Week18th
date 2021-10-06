@@ -117,7 +117,7 @@ public class Player : MonoBehaviour
         while (distance > float.Epsilon)
         {
             Vector3 currentPos = this.gameObject.transform.position;
-            transform.position = Vector3.MoveTowards(currentPos, targetPos, 6f * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(currentPos, targetPos, 5f*Time.deltaTime);
             distance = (transform.position - targetPos).sqrMagnitude;
             yield return null;
         }

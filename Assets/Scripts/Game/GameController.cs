@@ -9,15 +9,15 @@ public class GameController : MonoBehaviour
     enum GameState
     {
         Idle,
+        PlayerTurn,
         OpenInventory,
         UseItem,
-        PlayerAttack,
-        PlayerMove,
         EnemyTurn,
         Busy,
         CheckLevelUP,
         StatusUPSelection,
         GameOver,
+        Goal,
         End,
     }
 
@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour
     [SerializeField] DungeonGenerator dungeonGenerator;
     [SerializeField] PlayerStatusUI playerStatusUI;
     [SerializeField] GoalMessage goalMessageUI;
+    [SerializeField] CameraManager cameraManager;
 
     Inventory inventory;
 
@@ -45,7 +46,8 @@ public class GameController : MonoBehaviour
         dungeonGenerator.Init();
         player = dungeonGenerator.Player.GetComponent<Player>();
         player.Init();
-        
+        cameraManager.SetTarget(player.transform);
+
         enemies = new List<Enemy>();
         foreach (ObjectPosition enemyObj in dungeonGenerator.Enemys)
         {
@@ -67,50 +69,103 @@ public class GameController : MonoBehaviour
     }
 
     // ゲームの状態に応じて、入力処理をかえる
-    // Idel:通常時
-    // OpenInventory:インベントリを開いているとき
-    // StatusUPSelection:ステータスUPのUIが出てるとき
+    // switch文をif文に変えたことで、1フレームの間に処理できることが増えた=>敵とPlayerが一緒に動く
     void Update()
     {
-        switch (state)
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            case GameState.Idle:
-                HandleUpdateIdle();
-                break;
-            case GameState.OpenInventory:
-                HandleUpdateInventory();
-                break;
-            case GameState.StatusUPSelection:
-                HandleStatusUPSelection();
-                break;
-            case GameState.PlayerAttack:
-                HandleUpdatePlayerAttack();
-                break;
-            case GameState.PlayerMove:
-                HandleUpdatePlayerMove();
-                break;
-            case GameState.CheckLevelUP:
-                HandleUpdateCheckLevelUP();
-                break;
-            case GameState.EnemyTurn:
-                HandleUpdateEnemyTurn();
-                break;
-            case GameState.UseItem:
-                HandleUpdateUseItem();
-                break;
-            case GameState.End:
-                HandleUpdateEnd();
-                break;
-            case GameState.GameOver:
-                HandleUpdateGameOver();
-                break;
+            // 左シフト押してると早く動ける:バグるかも
+            Time.timeScale = 4f;
         }
+        else
+        {
+            Time.timeScale = 1;
+        }
+        if (state == GameState.GameOver)
+        {
+            HandleUpdateGameOver();
+            return;
+        }
+        // 入力待ち
+        if (state == GameState.Idle)
+        {
+            HandleUpdateIdle();
+        }
+
+        // 入力後はPlayerの処理
+        if (state == GameState.PlayerTurn)
+        {
+            HandlePlayerTurn();
+        }
+        else if(state == GameState.OpenInventory)
+        {
+            HandleUpdateInventory();
+        }
+
+        if (state == GameState.UseItem)
+        {
+            HandleUpdateUseItem();
+        }
+
+        // レベルアップのチェック
+        if (state == GameState.CheckLevelUP)
+        {
+            HandleUpdateCheckLevelUP();
+        }
+        if (state == GameState.StatusUPSelection)
+        {
+            HandleStatusUPSelection();
+        }
+
+        if (state == GameState.EnemyTurn)
+        {
+            HandleUpdateEnemyTurn();
+        }
+        if (state == GameState.End)
+        {
+            HandleUpdateEnd();
+        }
+
+
+        //switch (state)
+        //{
+        //    case GameState.Idle:
+        //        HandleUpdateIdle();
+        //        break;
+        //    case GameState.PlayerTurn:
+        //        HandlePlayerTurn();
+        //        break;
+        //    case GameState.OpenInventory:
+        //        HandleUpdateInventory();
+        //        break;
+        //    case GameState.StatusUPSelection:
+        //        HandleStatusUPSelection();
+        //        break;
+        //    case GameState.CheckLevelUP:
+        //        HandleUpdateCheckLevelUP();
+        //        break;
+        //    case GameState.EnemyTurn:
+        //        HandleUpdateEnemyTurn();
+        //        break;
+        //    case GameState.UseItem:
+        //        HandleUpdateUseItem();
+        //        break;
+        //    case GameState.End:
+        //        HandleUpdateEnd();
+        //        break;
+        //    case GameState.GameOver:
+        //        HandleUpdateGameOver();
+        //        break;
+        //}
     }
 
     // Idle時の処理
     void HandleUpdateIdle()
     {
-        player.HandleUpdate();
+        if (Input.GetKey(KeyCode.RightArrow)|| Input.GetKey(KeyCode.LeftArrow)|| Input.GetKey(KeyCode.UpArrow)|| Input.GetKey(KeyCode.DownArrow))
+        {
+            state = GameState.PlayerTurn;
+        }
 
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -123,13 +178,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void HandleUpdatePlayerAttack()
+    void HandlePlayerTurn()
     {
-        Debug.Log("PlayerAttack");
-    }
-    void HandleUpdatePlayerMove()
-    {
-        Debug.Log("PlayerMove");
+        player.HandleUpdate();
     }
 
     void HandleUpdateCheckLevelUP()
@@ -197,6 +248,7 @@ public class GameController : MonoBehaviour
         switch (state)
         {
             case GameState.Busy:
+            case GameState.Goal:
             case GameState.GameOver:
                 break;
             default:
@@ -234,7 +286,15 @@ public class GameController : MonoBehaviour
         {
             yield return null;
         }
-        state = GameState.End;
+        switch (state)
+        {
+            case GameState.Goal:
+            case GameState.GameOver:
+                break;
+            default:
+                state = GameState.End;
+                break;
+        }
     }
 
     bool ChechEnemyTurnEnd()
@@ -364,7 +424,8 @@ public class GameController : MonoBehaviour
 
     void Restart()
     {
-        state = GameState.Busy;
+        state = GameState.Goal;
+        Debug.Log("Restart");
         StartCoroutine(DelayRestart());
     }
 
