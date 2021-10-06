@@ -275,6 +275,10 @@ public class GameController : MonoBehaviour
 
         for (int i = 0; i < enemies.Count; i++)
         {
+            if (!enemies[i].gameObject.activeSelf)
+            {
+                continue;
+            }
             bool attacked = enemies[i].MoveEnemy();
             if (attacked)
             {

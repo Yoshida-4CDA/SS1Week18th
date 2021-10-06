@@ -9,6 +9,7 @@ public class ObjectPosition : MonoBehaviour
     public Rect2D range = new Rect2D(0, 0, 0, 0);
     public Vector2Int RoomGrind;
     public Vector2 nextMovePosition;
+    AStarPath aPath = new AStarPath();
 
     public Vector2Int Grid
     {
@@ -62,6 +63,15 @@ public class ObjectPosition : MonoBehaviour
     public bool IsWall(Vector2 point)
     {
         return DungeonGenerator.instance.IsWall(point.x, point.y);
+    }
+
+    // 毎回行わない
+    // Playerを見つけたら毎回行う
+    public Vector2Int GetAStarNextDirection()
+    {
+        Vector2Int lastPath = aPath.AstarSearchPathFinding(DungeonGenerator.instance.MapData2D, Grid, DungeonGenerator.instance.Player.Grid);
+        Vector2Int position = lastPath - Grid;
+        return position;
     }
 }
 [System.Serializable]

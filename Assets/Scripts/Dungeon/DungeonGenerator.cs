@@ -105,6 +105,11 @@ public class DungeonGenerator : MonoBehaviour
         return MapData2D.Get(obj.Grid.x, obj.Grid.y) == CHIP_WALL;
     }
 
+    public Vector2 GetChip(Vector2Int point)
+    {
+        return new Vector2(GetChipX(point.x), GetChipY(point.y));
+    }
+
     /// チップ上のX座標を取得する:整数値のデータを配置する座標に変換する
     float GetChipX(int i)
     {
