@@ -129,7 +129,7 @@ public class Enemy : MonoBehaviour
         while (remainingDistance > float.Epsilon)
         {
             // プレイヤーの現在位置を変更(現在位置, 移動したい先の位置, 変化量)
-            transform.position = Vector3.MoveTowards(this.gameObject.transform.position, endPos, 10f * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(this.gameObject.transform.position, endPos, 5f * Time.deltaTime);
 
             // 移動したい位置との距離の2乗を再度計算
             remainingDistance = (transform.position - endPos).sqrMagnitude;
