@@ -35,4 +35,8 @@ public class ParamsSO : ScriptableObject
     public PlayerStatus initPlayerStatus;
     // 敵の強さ
     public List<EnemyStatus> initEnemyStatusList = new List<EnemyStatus>();
+    // 被ダメージエフェクトのカラー(プレイヤー)
+    public Color playerDamageEffectColor;
+    // 被ダメージエフェクトのカラー(敵)
+    public Color enemyDamageEffectColor;
 }

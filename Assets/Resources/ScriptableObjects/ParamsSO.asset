@@ -26,3 +26,5 @@ MonoBehaviour:
     hp: 5
     at: 2
     exp: 2
+  playerDamageEffectColor: {r: 1, g: 0, b: 0, a: 1}
+  enemyDamageEffectColor: {r: 0, g: 0.5019608, b: 1, a: 1}

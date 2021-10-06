@@ -168,6 +168,7 @@ public class Enemy : MonoBehaviour
     {
         GameObject effectObj = Instantiate(damageCanvasPrefab, position, Quaternion.identity);
         DamageEffect damageEffect = effectObj.GetComponent<DamageEffect>();
+        damageEffect.text.color = ParamsSO.Entity.enemyDamageEffectColor;
         damageEffect.ShowDamage(damage);
     }
 }
