@@ -6,9 +6,27 @@ using UnityEngine.UI;
 public class MessageUI : MonoBehaviour
 {
     [SerializeField] Text messageText = default;
-    void Start()
+
+    public static MessageUI instance;
+    private void Awake()
     {
-        SetMessage("羊はバクに攻撃した");
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
+
+    public void DelayMessage(string message)
+    {
+        StopAllCoroutines();
+        StartCoroutine(Delay(message));
+    }
+
+    IEnumerator Delay(string message)
+    {
+        messageText.text = "";
+        yield return null;
+        SetMessage(message);
     }
 
     public void SetMessage(string message)

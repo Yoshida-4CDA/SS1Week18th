@@ -679,7 +679,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30BF\u30A4\u30C8\u30EB"
+  m_Text: STRAY SHEEP
 --- !u!222 &1883961855
 CanvasRenderer:
   m_ObjectHideFlags: 0

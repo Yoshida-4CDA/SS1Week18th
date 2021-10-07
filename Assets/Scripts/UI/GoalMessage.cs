@@ -31,12 +31,12 @@ public class GoalMessage : MonoBehaviour
         SoundManager.instance.PlaySE(SoundManager.SE.GameOver);
 
         gameObject.SetActive(true);
-        this.message.text = $"GAME OVER\n\n 合計睡眠時間... {time} 時間";
+        this.message.text = $"GAME OVER\n\n 睡眠時間... {time-1} 時間";
         naichilab.RankingLoader.Instance.IsOpeningRanking = true;
 
         if (!IsOpenedRankingBoard)
         {
-            StartCoroutine(ShowRankingBoard(time));
+            StartCoroutine(ShowRankingBoard(time - 1));
         }
     }
 

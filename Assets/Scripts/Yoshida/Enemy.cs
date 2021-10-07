@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
 
     public int HP { get => status.hp; }
     public int Exp { get => status.exp; }
+    public string Name { get => status.name; }
 
     ObjectPosition objectPositionTool;
 
@@ -159,6 +160,7 @@ public class Enemy : MonoBehaviour
     {
         if (player.Status.hp > 0)
         {
+            MessageUI.instance.SetMessage($"{Name} は羊を攻撃した. \n<color=#E74B68>{status.at}</color>のダメージ");
             animator.SetTrigger("Attack");
             player.PlayerDamage(status.at);
         }
