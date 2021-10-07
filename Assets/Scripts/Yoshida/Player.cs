@@ -159,6 +159,7 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Playerの攻撃");
         enemy.EnemyDamage(status.at);
+        SoundManager.instance.PlaySE(SoundManager.SE.Attack);
         animator.SetTrigger("Attack");
     }
 
@@ -183,6 +184,7 @@ public class Player : MonoBehaviour
         SpawnCanvasPrefab(transform.position, damage);
 
         CheckHP();
+        SoundManager.instance.PlaySE(SoundManager.SE.Damage);
         animator.SetTrigger("Damage");
     }
 
@@ -224,17 +226,19 @@ public class Player : MonoBehaviour
 
     public void StatusUpMaxHP(int amount)
     {
+        SoundManager.instance.PlaySE(SoundManager.SE.HPUP);
         status.maxHP += amount;
         status.hp += amount;
     }
     public void StatusUpAT(int amount)
     {
+        SoundManager.instance.PlaySE(SoundManager.SE.ATUP);
         status.at += amount;
     }
     public void Heal(int amount)
     {
+        SoundManager.instance.PlaySE(SoundManager.SE.Heal);
         status.hp += amount;
         status.hp = Mathf.Clamp(status.hp, 0, status.maxHP);
     }
-
 }

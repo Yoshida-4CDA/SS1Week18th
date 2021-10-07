@@ -27,6 +27,9 @@ public class GoalMessage : MonoBehaviour
     }
     public void ShowResult(int time)
     {
+        SoundManager.instance.StopBGM();
+        SoundManager.instance.PlaySE(SoundManager.SE.GameOver);
+
         gameObject.SetActive(true);
         this.message.text = $"GAME OVER\n\n 合計睡眠時間... {time} 時間";
         naichilab.RankingLoader.Instance.IsOpeningRanking = true;
@@ -41,7 +44,7 @@ public class GoalMessage : MonoBehaviour
     {
         IsOpenedRankingBoard = true;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         naichilab.RankingLoader.Instance.SendScoreAndShowRanking(time);
     }
 
