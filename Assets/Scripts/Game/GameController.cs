@@ -40,8 +40,12 @@ public class GameController : MonoBehaviour
     Player player;
     List<Enemy> enemies;
 
+    [SerializeField] Fade fade;
+
     void Start()
     {
+        fade.FadeOut(1f);   // フェードアウト演出
+
         inventory = GameData.instance.GetComponent<Inventory>();
         dungeonGenerator.Init();
         player = dungeonGenerator.Player.GetComponent<Player>();
@@ -125,38 +129,6 @@ public class GameController : MonoBehaviour
         {
             HandleUpdateEnd();
         }
-
-
-        //switch (state)
-        //{
-        //    case GameState.Idle:
-        //        HandleUpdateIdle();
-        //        break;
-        //    case GameState.PlayerTurn:
-        //        HandlePlayerTurn();
-        //        break;
-        //    case GameState.OpenInventory:
-        //        HandleUpdateInventory();
-        //        break;
-        //    case GameState.StatusUPSelection:
-        //        HandleStatusUPSelection();
-        //        break;
-        //    case GameState.CheckLevelUP:
-        //        HandleUpdateCheckLevelUP();
-        //        break;
-        //    case GameState.EnemyTurn:
-        //        HandleUpdateEnemyTurn();
-        //        break;
-        //    case GameState.UseItem:
-        //        HandleUpdateUseItem();
-        //        break;
-        //    case GameState.End:
-        //        HandleUpdateEnd();
-        //        break;
-        //    case GameState.GameOver:
-        //        HandleUpdateGameOver();
-        //        break;
-        //}
     }
 
     // Idle時の処理
