@@ -367,14 +367,15 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && inventory.List.Count > 0)
         {
             // 決定
-            // SoundManager.instance.PlaySE(SoundManager.SE.Heal);
             Item selectedItem = inventory.List[currentItemSlot];
             switch(selectedItem.Type)
             {
                 case ItemType.HPHeal:
+                    SoundManager.instance.PlaySE(SoundManager.SE.HPHeal);
                     messageUI.SetMessage($"羊は {selectedItem.Name} を使った!\nHPが<color=#FFAC00>{selectedItem.Amount}</color>回復した");
                     break;
                 case ItemType.SleepPointHeal:
+                    SoundManager.instance.PlaySE(SoundManager.SE.SleepPointHeal);
                     messageUI.SetMessage($"羊は {selectedItem.Name} を使った!\n安眠度が<color=#FFAC00>{selectedItem.Amount}</color>回復した");
                     break;
             }
@@ -447,7 +448,7 @@ public class GameController : MonoBehaviour
 
     void OpenStatusSelectionUI()
     {
-        SoundManager.instance.PlaySE(SoundManager.SE.OpenInventory);
+        SoundManager.instance.PlaySE(SoundManager.SE.LevelUP);
         state = GameState.StatusUPSelection;
         currentStatusUPIndex = 0;
         // UI表示

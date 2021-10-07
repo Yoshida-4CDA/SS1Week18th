@@ -14,19 +14,21 @@ public class SoundManager : MonoBehaviour
     // SEを列挙
     public enum SE
     {
+        GameStart,
         GameOver,
         Attack,
         Damage,
-        Heal,
         GetItem,
-        ATUP,
+        InventoryMax,
         OpenInventory,
         Cursor,
-        Stairs,
-        GameStart,
-        InventoryMax,
         Cancel,
-        HPUP
+        HPHeal,
+        SleepPointHeal,
+        LevelUP,
+        HPUP,
+        ATUP,
+        Stairs,
     }
 
     public static SoundManager instance;
