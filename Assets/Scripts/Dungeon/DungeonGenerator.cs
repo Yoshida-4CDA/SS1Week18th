@@ -386,7 +386,16 @@ public class DungeonGenerator : MonoBehaviour
             {
                 SpawnGaol(left, right, top, bottom);
             }
-            SpawnItem(left, right, top, bottom);
+            int r = Random.Range(0, 100);
+            float sum = ParamsSO.Entity.rateHerb + ParamsSO.Entity.rateHerbTea + ParamsSO.Entity.rateEmpty;
+            if (r < ParamsSO.Entity.rateHerb/sum*100)
+            {
+                SpawnItem(dungeonPrefabs.Herb, left, right, top, bottom);
+            }
+            else if(r < (ParamsSO.Entity.rateHerb + ParamsSO.Entity.rateHerbTea)/sum*100)
+            {
+                SpawnItem(dungeonPrefabs.HerbTea, left, right, top, bottom);
+            }
             // 部屋を通路にする
             FillDgRect(div.Room);
         }
@@ -437,7 +446,7 @@ public class DungeonGenerator : MonoBehaviour
         GameObject goal = Instantiate(dungeonPrefabs.Goal, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity);
     }
 
-    void SpawnItem(int left, int right, int top, int bottom)
+    void SpawnItem(GameObject item, int left, int right, int top, int bottom)
     {
         int r_x = Random.Range(left, right);
         int r_y = Random.Range(top, bottom);
@@ -446,7 +455,7 @@ public class DungeonGenerator : MonoBehaviour
             r_x = Random.Range(left, right);
             r_y = Random.Range(top, bottom);
         }
-        Instantiate(dungeonPrefabs.Herb, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity, stage);
+        Instantiate(item, new Vector3(GetChipX(r_x), GetChipY(r_y)), Quaternion.identity, stage);
     }
 
 
@@ -637,4 +646,5 @@ public class DungeonPrefabs
     public ObjectPosition Enemy;
     public GameObject Goal;
     public GameObject Herb;
+    public GameObject HerbTea;
 }

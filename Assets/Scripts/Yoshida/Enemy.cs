@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour
     public int HP { get => status.hp; }
     public int Exp { get => status.exp; }
     public string Name { get => status.name; }
+    [SerializeField]
+    Texture[] sprites;
+
 
     ObjectPosition objectPositionTool;
 
@@ -27,7 +30,10 @@ public class Enemy : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         objectPositionTool = GetComponent<ObjectPosition>();
-        status.Set(ParamsSO.Entity.initEnemyStatusList[0]);
+        int stage = GameData.instance.PlayerStatus.currentStage-1;
+        status.Set(ParamsSO.Entity.initEnemyStatusList[0], stage);
+        OverrideSprite overrideSprite = GetComponentInChildren<OverrideSprite>();
+        overrideSprite.overrideTexture = sprites[stage % 4];
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
         Debug.Log($"EnemyのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
         objectPositionTool.nextMovePosition = objectPositionTool.Grid;
@@ -121,7 +127,6 @@ public class Enemy : MonoBehaviour
         Vector2 endPos = startPos + new Vector2(x, y);  // 移動したい位置
 
         objectPositionTool.nextMovePosition = objectPositionTool.Grid + new Vector2Int(x, -y);
-        Debug.Log(objectPositionTool.nextMovePosition);
         if (!isMoving && !objectPositionTool.IsWall(endPos) && objectPositionTool.IsOverlapPointNextMove() == null)
         {
             StartCoroutine(Movement(endPos));
@@ -205,12 +210,18 @@ public class EnemyStatus
     public int at; 
     public int exp;
 
-    public void Set(EnemyStatus status)
+    public void Set(EnemyStatus status, int stage)
     {
-        level = status.level;
+        level = (stage / 4) + 1;
         name = status.name;
-        hp = status.hp;
-        at = status.at; 
-        exp = status.at;
+        hp = status.hp + stage * ParamsSO.Entity.enemyLevelUPAddHP;
+        at = status.at + stage * ParamsSO.Entity.enemyLevelUPAddAT; 
+        exp = status.exp;
+        if (stage%4 == 3)
+        {
+            hp = status.hp + stage * ParamsSO.Entity.enemyLevelUPAddHP * 2;
+            at = status.at + stage * ParamsSO.Entity.enemyLevelUPAddAT * 2;
+            exp = 10;
+        }
     }
 }

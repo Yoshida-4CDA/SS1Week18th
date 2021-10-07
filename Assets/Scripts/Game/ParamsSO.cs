@@ -39,4 +39,13 @@ public class ParamsSO : ScriptableObject
     public Color playerDamageEffectColor;
     // 被ダメージエフェクトのカラー(敵)
     public Color enemyDamageEffectColor;
+    public int healPointUsedHerb;
+    public int healPointUsedHerbTea;
+    public int statusUPAddHP;
+    public int statusUPAddAT;
+    public int enemyLevelUPAddHP;
+    public int enemyLevelUPAddAT;
+    public int rateHerb;
+    public int rateHerbTea;
+    public int rateEmpty;
 }

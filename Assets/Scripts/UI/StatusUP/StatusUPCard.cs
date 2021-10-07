@@ -9,13 +9,14 @@ public class StatusUPCard : MonoBehaviour
     {
         HPUP,
         ATUP,
+        SLPUP,
     }
     [SerializeField] Text text;
 
 
     [SerializeField] GameObject hilightPanel;
     [SerializeField] Type type;
-    [SerializeField] int amount; // 増加量
+    int amount; // 増加量
 
 
     private void Awake()
@@ -23,10 +24,15 @@ public class StatusUPCard : MonoBehaviour
         switch (type)
         {
             case Type.HPUP:
-                text.text = $"HP:{amount}UP";
+                amount = ParamsSO.Entity.statusUPAddHP;
+                text.text = $"最大HP ＋{amount}";
                 break;
             case Type.ATUP:
-                text.text = $"AT:{amount}UP";
+                amount = ParamsSO.Entity.statusUPAddAT;
+                text.text = $"AT ＋{amount}";
+                break;
+            case Type.SLPUP:
+                text.text = $"安眠度100%";
                 break;
         }
 
@@ -41,6 +47,9 @@ public class StatusUPCard : MonoBehaviour
                 break;
             case Type.ATUP:
                 player.StatusUpAT(amount);
+                break;
+            case Type.SLPUP:
+                player.HealSLP(100);
                 break;
         }
     }

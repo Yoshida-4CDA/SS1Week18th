@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
 
     public PlayerStatus Status { get => status; }
     public bool IsMoving { get => isMoving; }
-
+    int tmpSLP;
     [SerializeField] GameObject damageCanvasPrefab;
 
     public void Init()
@@ -38,14 +38,35 @@ public class Player : MonoBehaviour
         status.exp = GameData.instance.PlayerStatus.exp;
         status.currentStage = GameData.instance.PlayerStatus.currentStage;
         status.levelUPExp = GameData.instance.PlayerStatus.levelUPExp;
+        status.sleepPoint = GameData.instance.PlayerStatus.sleepPoint;
         objectPositionTool = GetComponent<ObjectPosition>();
         objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         animator = GetComponentInChildren<Animator>();
         // Debug.Log($"PlayerのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
     }
 
+
     public void HandleUpdate()
     {
+        if (status.sleepPoint <= 0)
+        {
+            MessageUI.instance.SetMessage($"<color=#E74B68>安眠度が0になった!!!\nHPが減ってしまうよ!!!</color>");
+            status.hp--;
+            if (status.hp <= 0)
+            {
+                status.hp = 0;
+            }
+        }
+        tmpSLP++;
+        if (tmpSLP % 2 == 0)
+        {
+            status.sleepPoint--;
+        }
+        if (status.sleepPoint <= 0)
+        {
+            status.sleepPoint = 0;
+        }
+
         axisX = (int)Input.GetAxisRaw("Horizontal");
         axisY = (int)Input.GetAxisRaw("Vertical");
 
@@ -182,6 +203,10 @@ public class Player : MonoBehaviour
     public void PlayerDamage(int damage)
     {
         status.hp -= damage;
+        if (status.hp<=0)
+        {
+            status.hp = 0;
+        }
         SpawnCanvasPrefab(transform.position, damage);
 
         CheckHP();
@@ -220,6 +245,7 @@ public class Player : MonoBehaviour
     {
         if (status.IsLevelUP)
         {
+            status.hp = status.maxHP;
             status.exp -= status.levelUPExp;
             status.level++;
         }
@@ -236,6 +262,12 @@ public class Player : MonoBehaviour
         SoundManager.instance.PlaySE(SoundManager.SE.ATUP);
         status.at += amount;
     }
+    public void HealSLP(int amount)
+    {
+        SoundManager.instance.PlaySE(SoundManager.SE.ATUP);
+        status.sleepPoint = Mathf.Min(status.sleepPoint + amount, 100);
+    }
+
     public void Heal(int amount)
     {
         status.hp += amount;

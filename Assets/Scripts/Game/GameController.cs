@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
         Busy,
         CheckLevelUP,
         StatusUPSelection,
+        StatusUP,
         GameOver,
         Goal,
         End,
@@ -55,6 +56,7 @@ public class GameController : MonoBehaviour
         player = dungeonGenerator.Player.GetComponent<Player>();
         player.Init();
         cameraManager.SetTarget(player.transform);
+        playerStatusUI.SetData(player.Status);
 
         enemies = new List<Enemy>();
         foreach (ObjectPosition enemyObj in dungeonGenerator.Enemys)
@@ -151,7 +153,7 @@ public class GameController : MonoBehaviour
         // TODOテスト用
         if (Input.GetKeyDown(KeyCode.O))
         {
-            OpenStatusSelectionUI();
+            // OpenStatusSelectionUI();
         }
     }
 
@@ -240,8 +242,6 @@ public class GameController : MonoBehaviour
 
     void PlayerEnd()
     {
-        // Debug.Log("PlayerEnd");
-        // GameState.BusyだったらBusyのまま, そうじゃないなら敵のターン
         switch (state)
         {
             case GameState.Busy:
@@ -356,10 +356,10 @@ public class GameController : MonoBehaviour
             switch (selectedItem.Type)
             {
                 case ItemType.HPHeal:
-                    messageUI.SetMessage($"HPを{selectedItem.Amount}回復する");
+                    messageUI.SetMessage($"HPを{ParamsSO.Entity.healPointUsedHerb}回復する");
                     break;
                 case ItemType.SleepPointHeal:
-                    messageUI.SetMessage($"安眠度を{selectedItem.Amount}回復する\n安眠度が0になるとHPが徐々に減る");
+                    messageUI.SetMessage($"安眠度を{ParamsSO.Entity.healPointUsedHerbTea}回復する\n安眠度が0になるとHPが徐々に減る");
                     break;
             }
         }
@@ -372,16 +372,16 @@ public class GameController : MonoBehaviour
             {
                 case ItemType.HPHeal:
                     SoundManager.instance.PlaySE(SoundManager.SE.HPHeal);
-                    messageUI.SetMessage($"羊は {selectedItem.Name} を使った!\nHPが<color=#FFAC00>{selectedItem.Amount}</color>回復した");
+                    messageUI.SetMessage($"羊は {selectedItem.Name} を使った!\nHPが<color=#FFAC00>{ParamsSO.Entity.healPointUsedHerb}</color>回復した");
                     break;
                 case ItemType.SleepPointHeal:
                     SoundManager.instance.PlaySE(SoundManager.SE.SleepPointHeal);
-                    messageUI.SetMessage($"羊は {selectedItem.Name} を使った!\n安眠度が<color=#FFAC00>{selectedItem.Amount}</color>回復した");
+                    messageUI.SetMessage($"羊は {selectedItem.Name} を使った!\n安眠度が<color=#FFAC00>{ParamsSO.Entity.healPointUsedHerbTea}</color>回復した");
                     break;
             }
             selectedItem.Use(player);
-            inventory.List.Remove(selectedItem);
             playerStatusUI.SetData(player.Status);
+            inventory.List.Remove(selectedItem);
             StartCoroutine(UseItem());
             CloseInventory();
         }
@@ -442,8 +442,17 @@ public class GameController : MonoBehaviour
         {
             StatusUPCard selectedCard = statusUPSelection.StatusUPCards[currentStatusUPIndex];
             selectedCard.UseCard(player);
+            playerStatusUI.SetData(player.Status);
             CloseStatusSelectionUI();
+            StartCoroutine(DelaySelection());
         }
+    }
+
+    IEnumerator DelaySelection()
+    {
+        state = GameState.StatusUP;
+        yield return new WaitForSeconds(0.75f);
+        state = GameState.EnemyTurn;
     }
 
     void OpenStatusSelectionUI()
@@ -457,7 +466,6 @@ public class GameController : MonoBehaviour
     }
     void CloseStatusSelectionUI()
     {
-        state = GameState.EnemyTurn;
         statusUPSelection.gameObject.SetActive(false);
     }
 

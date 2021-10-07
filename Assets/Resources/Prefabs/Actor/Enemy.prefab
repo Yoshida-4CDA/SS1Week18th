@@ -100,6 +100,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMoving: 0
+  sprites:
+  - {fileID: 2800000, guid: 87df49bc858b144ce97ab0fef6023af7, type: 3}
+  - {fileID: 2800000, guid: 4603bfb649cc5437b820c40e354a9805, type: 3}
+  - {fileID: 2800000, guid: c476557d71d334431a6ed3ae2c12cb70, type: 3}
+  - {fileID: 2800000, guid: eb36caed2bbb348e884ae3225b986a3c, type: 3}
   damageCanvasPrefab: {fileID: 2401425932815700788, guid: b5bb348a74f11bb40973aba51179f9e9, type: 3}
 --- !u!61 &1642611724524430946
 BoxCollider2D:
