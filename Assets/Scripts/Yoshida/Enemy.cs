@@ -20,9 +20,11 @@ public class Enemy : MonoBehaviour
     ObjectPosition objectPositionTool;
 
     [SerializeField] GameObject damageCanvasPrefab;
+    Animator animator;
 
     void Start()
     {
+        animator = GetComponentInChildren<Animator>();
         objectPositionTool = GetComponent<ObjectPosition>();
         status.Set(ParamsSO.Entity.initEnemyStatusList[0]);
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
@@ -48,8 +50,8 @@ public class Enemy : MonoBehaviour
      */
     public bool MoveEnemy()
     {
-        int xDir = 0;
-        int yDir = 0;
+        //int xDir = 0;
+        //int yDir = 0;
 
         //// Playerと同じx軸にいるかどうかを判定
         //if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon ||
@@ -78,15 +80,9 @@ public class Enemy : MonoBehaviour
         }
 
 
-        switch (nextDirection.x)
-        {
-            case 1:
-                transform.localScale = new Vector3(-1, 1, 1);
-                break;
-            case -1:
-                transform.localScale = new Vector3(1, 1, 1);
-                break;
-        }
+        animator.SetFloat("InputX", nextDirection.x);
+        animator.SetFloat("InputY", -nextDirection.y);
+        animator.SetFloat("Speed", nextDirection.sqrMagnitude);
         return ATMove(nextDirection.x, -nextDirection.y);
         // return ATMove(xDir, yDir);
     }
@@ -153,12 +149,14 @@ public class Enemy : MonoBehaviour
 
     void OnCantMove(Player player)
     {
+        animator.SetTrigger("Attack");
         Debug.Log("Enemyの攻撃");
         player.PlayerDamage(status.at);
     }
 
     public void EnemyDamage(int damage)
     {
+        animator.SetTrigger("Damage");
         status.hp -= damage;
         Debug.Log($"EnemyのHP：{status.hp}");
 
