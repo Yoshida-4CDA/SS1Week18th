@@ -7,23 +7,22 @@ public class SoundManager : MonoBehaviour
     // BGMを列挙
     public enum IndexBGM
     {
-        Bgm1,
-        Bgm2,
-        Bgm3,
+        Title,
+        Main,
     }
 
     // SEを列挙
     public enum IndexSE
     {
-        Se1,
-        Se2,
-        Se3,
-        Se4,
-        Se5,
-        Se6,
-        Se7,
-        Se8,
-        Se9,
+        GameOver,
+        Attack,
+        Damage,
+        Heal,
+        GetItem,
+        LevelUp,
+        Cursor,
+        Decision,
+        Stairs,
     }
 
     public static SoundManager instance;
@@ -42,11 +41,17 @@ public class SoundManager : MonoBehaviour
 
     // BGM
     [SerializeField] AudioSource audioSourceBGM;
+
+    [Tooltip("0 = Title, 1 = Main")]
     [SerializeField] AudioClip[] audioClipBGM;
 
     // SE
     [SerializeField] AudioSource audioSourceSE;
     [SerializeField] AudioClip[] audioClipSE;
+
+    // SEのピッチ調整用変数
+    float low = .95f;
+    float high = 1.05f;
 
     public void StopBGM()
     {
@@ -63,5 +68,17 @@ public class SoundManager : MonoBehaviour
     public void PlaySE(int index)
     {
         audioSourceSE.PlayOneShot(audioClipSE[index]);
+    }
+
+    // 
+    public void PlayRandomSE(params AudioClip[] clips)
+    {
+        int randomIndex = Random.Range(0, clips.Length);
+        float randomPitch = Random.Range(low, high);
+
+        audioSourceSE.pitch = randomPitch;
+        audioSourceSE.clip = clips[randomIndex];
+
+        audioSourceSE.PlayOneShot(audioSourceSE.clip);
     }
 }

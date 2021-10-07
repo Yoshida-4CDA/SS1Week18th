@@ -44,6 +44,8 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        SoundManager.instance.PlayBGM((int)SoundManager.IndexBGM.Main);
+
         fade.FadeOut(2f);   // フェードアウト演出
 
         inventory = GameData.instance.GetComponent<Inventory>();

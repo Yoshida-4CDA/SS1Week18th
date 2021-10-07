@@ -47,20 +47,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSourceBGM: {fileID: 2402735736096562941}
   audioClipBGM:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: e776ce3bc5960724caa7569575a733a6, type: 3}
+  - {fileID: 8300000, guid: 3d6aaa3efa7a58f499756be97a89e809, type: 3}
   audioSourceSE: {fileID: 3130857009433632455}
-  audioClipSE:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  audioClipSE: []
 --- !u!82 &2402735736096562941
 AudioSource:
   m_ObjectHideFlags: 0
