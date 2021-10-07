@@ -28,6 +28,12 @@ public class GoalMessage : MonoBehaviour
         gameObject.SetActive(true);
         this.message.text = $"GAME OVER\n\n 合計睡眠時間... {time} 時間";
         naichilab.RankingLoader.Instance.IsOpeningRanking = true;
+        StartCoroutine(ShowRankingBoard(time));
+    }
+
+    IEnumerator ShowRankingBoard(int time)
+    {
+        yield return new WaitForSeconds(1f);
         naichilab.RankingLoader.Instance.SendScoreAndShowRanking(time);
     }
 
