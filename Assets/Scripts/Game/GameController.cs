@@ -45,6 +45,7 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        messageUI.SetMessage($"ここはある人の夢の世界\n<color=#FFAC00>下に向かうほど長く眠れる</color>と言われている");
         SoundManager.instance.PlayBGM(SoundManager.BGM.Main);
 
         fade.FadeOut(1.5f);   // フェードアウト演出
@@ -233,7 +234,7 @@ public class GameController : MonoBehaviour
     }
 
     void OnPlayerAttack()
-    {
+    {   
         state = GameState.PlayerAttack;
     }
 
@@ -349,24 +350,53 @@ public class GameController : MonoBehaviour
 
         // 選んだものに色をつける
         inventoryUI.UpdateInventorySelection(currentItemSlot);
+        if (inventory.List.Count > 0)
+        {
+            Item selectedItem = inventory.List[currentItemSlot];
+            switch (selectedItem.Type)
+            {
+                case ItemType.HPHeal:
+                    messageUI.SetMessage($"HPを{selectedItem.Amount}回復する");
+                    break;
+                case ItemType.SleepPointHeal:
+                    messageUI.SetMessage($"安眠度を{selectedItem.Amount}回復する\n安眠度が0になるとHPが徐々に減る");
+                    break;
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.Space) && inventory.List.Count > 0)
         {
             // 決定
             // SoundManager.instance.PlaySE(SoundManager.SE.Heal);
             Item selectedItem = inventory.List[currentItemSlot];
-            messageUI.SetMessage($"羊は{selectedItem.Name}を使った!");
+            switch(selectedItem.Type)
+            {
+                case ItemType.HPHeal:
+                    messageUI.SetMessage($"羊は {selectedItem.Name} を使った!\nHPが<color=#FFAC00>{selectedItem.Amount}</color>回復した");
+                    break;
+                case ItemType.SleepPointHeal:
+                    messageUI.SetMessage($"羊は {selectedItem.Name} を使った!\n安眠度が<color=#FFAC00>{selectedItem.Amount}</color>回復した");
+                    break;
+            }
             selectedItem.Use(player);
             inventory.List.Remove(selectedItem);
             playerStatusUI.SetData(player.Status);
+            StartCoroutine(UseItem());
             CloseInventory();
         }
         else if (Input.GetKeyDown(KeyCode.X))
         {
             // キャンセル
             SoundManager.instance.PlaySE(SoundManager.SE.Cancel);
+            state = GameState.Idle;
             CloseInventory();
         }
+    }
+
+    IEnumerator UseItem()
+    {
+        yield return new WaitForSeconds(0.75f);
+        state = GameState.EnemyTurn;
     }
 
     void OpenInventory()
@@ -379,7 +409,6 @@ public class GameController : MonoBehaviour
     }
     void CloseInventory()
     {
-        state = GameState.Idle;
         inventoryUI.gameObject.SetActive(false);
     }
 
@@ -406,7 +435,6 @@ public class GameController : MonoBehaviour
             }
         }
         currentStatusUPIndex = Mathf.Clamp(currentStatusUPIndex, min, max);
-        Debug.Log("HandleStatusUPSelection" + currentStatusUPIndex);
         statusUPSelection.UpdateCardSelection(currentStatusUPIndex);
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -420,7 +448,6 @@ public class GameController : MonoBehaviour
     void OpenStatusSelectionUI()
     {
         SoundManager.instance.PlaySE(SoundManager.SE.OpenInventory);
-        Debug.Log("OpenStatusSelectionUI");
         state = GameState.StatusUPSelection;
         currentStatusUPIndex = 0;
         // UI表示
@@ -432,6 +459,7 @@ public class GameController : MonoBehaviour
         state = GameState.EnemyTurn;
         statusUPSelection.gameObject.SetActive(false);
     }
+
 
     void OnItem(ItemObj itemObj)
     {
@@ -445,11 +473,21 @@ public class GameController : MonoBehaviour
             SoundManager.instance.PlaySE(SoundManager.SE.GetItem);
             inventory.List.Add(itemObj.Item);
             itemObj.gameObject.SetActive(false);
+            switch (itemObj.Item.Type)
+            {
+                case ItemType.HPHeal:
+                    messageUI.SetMessage("ハーブを手に入れた!\nHPの回復に使えるぞ");
+                    break;
+                case ItemType.SleepPointHeal:
+                    messageUI.SetMessage("ハーブティーを手に入れた!\n安眠度の回復に使えるぞ");
+                    break;
+            }
         }
     }
     void GameOver()
     {
         // enabled = false;
+        messageUI.SetMessage($"羊は眠りから覚めてしまった");
         state = GameState.GameOver;
         StartCoroutine(DelayGameOver());
     }
@@ -461,6 +499,7 @@ public class GameController : MonoBehaviour
 
     void Restart()
     {
+        messageUI.SetMessage($"より深く...より深く...");
         SoundManager.instance.PlaySE(SoundManager.SE.Stairs);
         state = GameState.Goal;
         Debug.Log("Restart");

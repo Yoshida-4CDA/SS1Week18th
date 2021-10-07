@@ -157,6 +157,7 @@ public class Player : MonoBehaviour
 
     void OnCantMove(Enemy enemy)
     {
+        MessageUI.instance.SetMessage($"羊は {enemy.Name} を攻撃した. \n<color=#FFAC00>{status.at}</color>のダメージ");
         Debug.Log("Playerの攻撃");
         enemy.EnemyDamage(status.at);
         SoundManager.instance.PlaySE(SoundManager.SE.Attack);
@@ -241,4 +242,12 @@ public class Player : MonoBehaviour
         status.hp += amount;
         status.hp = Mathf.Clamp(status.hp, 0, status.maxHP);
     }
+}
+
+public class DamageInfo
+{
+    public bool IsPlayerAttack { get; set; }
+    public GameObject Attacker { get; set; }
+    public GameObject Target { get; set; }
+    public int Damage { get; set; }
 }

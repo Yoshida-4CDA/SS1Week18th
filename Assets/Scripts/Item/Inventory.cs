@@ -23,6 +23,8 @@ public class Item
 {
     [SerializeField] ItemBase _base;
     public string Name { get => _base.Name; }
+    public int Amount { get => _base.Amount; }
+    public ItemType Type { get => _base.Type; }
 
     public void Use(Player player)
     {

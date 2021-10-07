@@ -19,4 +19,5 @@ public class ItemBase : ScriptableObject
 public enum ItemType
 {
     HPHeal,
+    SleepPointHeal,
 }
