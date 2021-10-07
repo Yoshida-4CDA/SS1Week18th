@@ -39,16 +39,14 @@ public class Enemy : MonoBehaviour
         {
             nextDirection = objectPositionTool.GetAStarNextDirection();
         }
-        int x = nextDirection.x;
-        int y = -nextDirection.y;
-
-        // Move関数を呼んでRayを飛ばす
-        bool canMove = Move(x, y);
-
+        //int x = nextDirection.x;
+        //int y = -nextDirection.y;
+        objectPositionTool.nextMovePosition = objectPositionTool.Grid + nextDirection;
 
         // 重なりがあるか?Playerか？
         ObjectPosition hitComponent = objectPositionTool.IsOverlapPointNextMove();
-        if (!canMove && hitComponent != null && hitComponent.GetComponent<Player>())
+        objectPositionTool.nextMovePosition = objectPositionTool.Grid;
+        if (hitComponent != null && hitComponent.GetComponent<Player>())
         {
             return true;
         }
@@ -122,7 +120,7 @@ public class Enemy : MonoBehaviour
         Vector2 endPos = startPos + new Vector2(x, y);  // 移動したい位置
 
         objectPositionTool.nextMovePosition = objectPositionTool.Grid + new Vector2Int(x, -y);
-
+        Debug.Log(objectPositionTool.nextMovePosition);
         if (!isMoving && !objectPositionTool.IsWall(endPos) && objectPositionTool.IsOverlapPointNextMove() == null)
         {
             StartCoroutine(Movement(endPos));
