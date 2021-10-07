@@ -23,7 +23,7 @@ public class Item
 {
     [SerializeField] ItemBase _base;
     public string Name { get => _base.Name; }
-    public int Amount { get => _base.Amount; }
+    // public int Amount { get => _base.Amount; }
     public ItemType Type { get => _base.Type; }
 
     public void Use(Player player)
@@ -31,10 +31,10 @@ public class Item
         switch (_base.Type)
         {
             case ItemType.HPHeal:
-                player.Heal(_base.Amount);
+                player.Heal(ParamsSO.Entity.healPointUsedHerb);
                 break;
             case ItemType.SleepPointHeal:
-                player.HealSLP(_base.Amount);
+                player.HealSLP(ParamsSO.Entity.healPointUsedHerbTea);
                 break;
         }
     }

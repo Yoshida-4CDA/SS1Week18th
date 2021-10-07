@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
 
     public PlayerStatus Status { get => status; }
     public bool IsMoving { get => isMoving; }
-
+    int tmpSLP;
     [SerializeField] GameObject damageCanvasPrefab;
 
     public void Init()
@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
         // Debug.Log($"PlayerのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
     }
 
+
     public void HandleUpdate()
     {
         if (status.sleepPoint <= 0)
@@ -56,8 +57,11 @@ public class Player : MonoBehaviour
                 status.hp = 0;
             }
         }
-
-        status.sleepPoint--;
+        tmpSLP++;
+        if (tmpSLP % 2 == 0)
+        {
+            status.sleepPoint--;
+        }
         if (status.sleepPoint <= 0)
         {
             status.sleepPoint = 0;
@@ -199,6 +203,10 @@ public class Player : MonoBehaviour
     public void PlayerDamage(int damage)
     {
         status.hp -= damage;
+        if (status.hp<=0)
+        {
+            status.hp = 0;
+        }
         SpawnCanvasPrefab(transform.position, damage);
 
         CheckHP();
@@ -237,6 +245,7 @@ public class Player : MonoBehaviour
     {
         if (status.IsLevelUP)
         {
+            status.hp = status.maxHP;
             status.exp -= status.levelUPExp;
             status.level++;
         }

@@ -127,7 +127,6 @@ public class Enemy : MonoBehaviour
         Vector2 endPos = startPos + new Vector2(x, y);  // 移動したい位置
 
         objectPositionTool.nextMovePosition = objectPositionTool.Grid + new Vector2Int(x, -y);
-        Debug.Log(objectPositionTool.nextMovePosition);
         if (!isMoving && !objectPositionTool.IsWall(endPos) && objectPositionTool.IsOverlapPointNextMove() == null)
         {
             StartCoroutine(Movement(endPos));
@@ -215,8 +214,14 @@ public class EnemyStatus
     {
         level = (stage / 4) + 1;
         name = status.name;
-        hp = status.hp + (stage / 4) * 5;
-        at = status.at + (stage / 4) * 5; 
-        exp = status.at;
+        hp = status.hp + stage * ParamsSO.Entity.enemyLevelUPAddHP;
+        at = status.at + stage * ParamsSO.Entity.enemyLevelUPAddAT; 
+        exp = status.exp;
+        if (stage%4 == 3)
+        {
+            hp = status.hp + stage * ParamsSO.Entity.enemyLevelUPAddHP * 2;
+            at = status.at + stage * ParamsSO.Entity.enemyLevelUPAddAT * 2;
+            exp = 10;
+        }
     }
 }

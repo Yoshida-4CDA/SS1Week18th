@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initPlayerStatus:
     level: 1
-    hp: 10
-    maxHP: 10
-    at: 2
+    hp: 100
+    maxHP: 100
+    at: 10
     exp: 0
     currentStage: 1
     levelUPExp: 10
@@ -24,8 +24,17 @@ MonoBehaviour:
   initEnemyStatusList:
   - level: 1
     name: "\u30D0\u30AF"
-    hp: 5
-    at: 2
+    hp: 25
+    at: 5
     exp: 2
   playerDamageEffectColor: {r: 0.9056604, g: 0.2947668, b: 0.40807924, a: 1}
   enemyDamageEffectColor: {r: 1, g: 0.6738893, b: 0, a: 1}
+  healPointUsedHerb: 30
+  healPointUsedHerbTea: 40
+  statusUPAddHP: 10
+  statusUPAddAT: 5
+  enemyLevelUPAddHP: 2
+  enemyLevelUPAddAT: 2
+  rateHerb: 4
+  rateHerbTea: 4
+  rateEmpty: 2

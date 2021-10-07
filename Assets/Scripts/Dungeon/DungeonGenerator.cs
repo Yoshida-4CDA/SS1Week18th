@@ -386,7 +386,16 @@ public class DungeonGenerator : MonoBehaviour
             {
                 SpawnGaol(left, right, top, bottom);
             }
-            SpawnItem(dungeonPrefabs.HerbTea, left, right, top, bottom);
+            int r = Random.Range(0, 100);
+            float sum = ParamsSO.Entity.rateHerb + ParamsSO.Entity.rateHerbTea + ParamsSO.Entity.rateEmpty;
+            if (r < ParamsSO.Entity.rateHerb/sum*100)
+            {
+                SpawnItem(dungeonPrefabs.Herb, left, right, top, bottom);
+            }
+            else if(r < (ParamsSO.Entity.rateHerb + ParamsSO.Entity.rateHerbTea)/sum*100)
+            {
+                SpawnItem(dungeonPrefabs.HerbTea, left, right, top, bottom);
+            }
             // 部屋を通路にする
             FillDgRect(div.Room);
         }
