@@ -7,6 +7,11 @@ public class Title : MonoBehaviour
 {
     [SerializeField] Fade fade;
 
+    void Start()
+    {
+        SoundManager.instance.PlayBGM((int)SoundManager.IndexBGM.Title);
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
