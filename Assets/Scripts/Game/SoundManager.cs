@@ -5,24 +5,28 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     // BGMを列挙
-    public enum IndexBGM
+    public enum BGM
     {
         Title,
         Main,
     }
 
     // SEを列挙
-    public enum IndexSE
+    public enum SE
     {
         GameOver,
         Attack,
         Damage,
         Heal,
         GetItem,
-        LevelUp,
+        ATUP,
+        OpenInventory,
         Cursor,
-        Decision,
         Stairs,
+        GameStart,
+        InventoryMax,
+        Cancel,
+        HPUP
     }
 
     public static SoundManager instance;
@@ -41,44 +45,29 @@ public class SoundManager : MonoBehaviour
 
     // BGM
     [SerializeField] AudioSource audioSourceBGM;
-
-    [Tooltip("0 = Title, 1 = Main")]
     [SerializeField] AudioClip[] audioClipBGM;
 
     // SE
     [SerializeField] AudioSource audioSourceSE;
     [SerializeField] AudioClip[] audioClipSE;
 
-    // SEのピッチ調整用変数
-    float low = .95f;
-    float high = 1.05f;
-
     public void StopBGM()
     {
         audioSourceBGM.Stop();
     }
 
-    public void PlayBGM(int index)
+    public void PlayBGM(BGM bgm)
     {
         StopBGM();
+        int index = (int)bgm;
         audioSourceBGM.clip = audioClipBGM[index];
         audioSourceBGM.Play();
     }
 
-    public void PlaySE(int index)
+    public void PlaySE(SE se)
     {
-        audioSourceSE.PlayOneShot(audioClipSE[index]);
-    }
-
-    // 
-    public void PlayRandomSE(params AudioClip[] clips)
-    {
-        int randomIndex = Random.Range(0, clips.Length);
-        float randomPitch = Random.Range(low, high);
-
-        audioSourceSE.pitch = randomPitch;
-        audioSourceSE.clip = clips[randomIndex];
-
-        audioSourceSE.PlayOneShot(audioSourceSE.clip);
+        int index = (int)se;
+        AudioClip clip = audioClipSE[index];
+        audioSourceSE.PlayOneShot(clip);
     }
 }

@@ -45,9 +45,9 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        SoundManager.instance.PlayBGM((int)SoundManager.IndexBGM.Main);
+        SoundManager.instance.PlayBGM(SoundManager.BGM.Main);
 
-        fade.FadeOut(2f);   // フェードアウト演出
+        fade.FadeOut(1.5f);   // フェードアウト演出
 
         inventory = GameData.instance.GetComponent<Inventory>();
         dungeonGenerator.Init();
@@ -192,6 +192,9 @@ public class GameController : MonoBehaviour
 
     void HandleUpdateGameOver()
     {
+        int min = 0;
+        int max = 1;
+
         if (naichilab.RankingLoader.Instance.IsOpeningRanking)
         {
             return;
@@ -200,12 +203,20 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             currentResult++;
+            if (currentResult <= max)
+            {
+                SoundManager.instance.PlaySE(SoundManager.SE.Cursor);
+            }
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             currentResult--;
+            if (currentItemSlot >= min)
+            {
+                SoundManager.instance.PlaySE(SoundManager.SE.Cursor);
+            }
         }
-        currentResult = Mathf.Clamp(currentResult, 0, 1);
+        currentResult = Mathf.Clamp(currentResult, min, max);
         goalMessageUI.HandleUpdateSelection(currentResult);
         if(Input.GetKeyDown(KeyCode.Space))
         {
@@ -314,16 +325,27 @@ public class GameController : MonoBehaviour
     // インベントリを開いてる時の処理
     void HandleUpdateInventory()
     {
+        int min = 0;
+        int max = inventory.List.Count - 1;
+
         // 方向キーでアイテム選択
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             currentItemSlot--;
+            if (currentItemSlot >= min)
+            {
+                SoundManager.instance.PlaySE(SoundManager.SE.Cursor);
+            }
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             currentItemSlot++;
+            if (currentItemSlot <= max)
+            {
+                SoundManager.instance.PlaySE(SoundManager.SE.Cursor);
+            }
         }
-        currentItemSlot = Mathf.Clamp(currentItemSlot, 0, inventory.List.Count - 1);
+        currentItemSlot = Mathf.Clamp(currentItemSlot, min, max);
 
         // 選んだものに色をつける
         inventoryUI.UpdateInventorySelection(currentItemSlot);
@@ -331,6 +353,7 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && inventory.List.Count > 0)
         {
             // 決定
+            // SoundManager.instance.PlaySE(SoundManager.SE.Heal);
             Item selectedItem = inventory.List[currentItemSlot];
             messageUI.SetMessage($"羊は{selectedItem.Name}を使った!");
             selectedItem.Use(player);
@@ -341,12 +364,14 @@ public class GameController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.X))
         {
             // キャンセル
+            SoundManager.instance.PlaySE(SoundManager.SE.Cancel);
             CloseInventory();
         }
     }
 
     void OpenInventory()
     {
+        SoundManager.instance.PlaySE(SoundManager.SE.OpenInventory);
         state = GameState.OpenInventory;
         currentItemSlot = 0;
         inventoryUI.gameObject.SetActive(true);
@@ -361,15 +386,26 @@ public class GameController : MonoBehaviour
     // ステータスUPパネルの操作:インベントリと似たコード
     void HandleStatusUPSelection()
     {
+        int min = 0;
+        int max = statusUPSelection.StatusUPCards.Length - 1;
+
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             currentStatusUPIndex++;
+            if (currentStatusUPIndex <= max)
+            {
+                SoundManager.instance.PlaySE(SoundManager.SE.Cursor);
+            }
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             currentStatusUPIndex--;
+            if (currentStatusUPIndex >= min)
+            {
+                SoundManager.instance.PlaySE(SoundManager.SE.Cursor);
+            }
         }
-        currentStatusUPIndex = Mathf.Clamp(currentStatusUPIndex, 0, statusUPSelection.StatusUPCards.Length - 1);
+        currentStatusUPIndex = Mathf.Clamp(currentStatusUPIndex, min, max);
         Debug.Log("HandleStatusUPSelection" + currentStatusUPIndex);
         statusUPSelection.UpdateCardSelection(currentStatusUPIndex);
 
@@ -383,6 +419,7 @@ public class GameController : MonoBehaviour
 
     void OpenStatusSelectionUI()
     {
+        SoundManager.instance.PlaySE(SoundManager.SE.OpenInventory);
         Debug.Log("OpenStatusSelectionUI");
         state = GameState.StatusUPSelection;
         currentStatusUPIndex = 0;
@@ -400,10 +437,12 @@ public class GameController : MonoBehaviour
     {
         if (inventory.List.Count >= Inventory.MAX)
         {
+            SoundManager.instance.PlaySE(SoundManager.SE.InventoryMax);
             messageUI.SetMessage("持ち物がいっぱいだ");
         }
         else
         {
+            SoundManager.instance.PlaySE(SoundManager.SE.GetItem);
             inventory.List.Add(itemObj.Item);
             itemObj.gameObject.SetActive(false);
         }
@@ -422,6 +461,7 @@ public class GameController : MonoBehaviour
 
     void Restart()
     {
+        SoundManager.instance.PlaySE(SoundManager.SE.Stairs);
         state = GameState.Goal;
         Debug.Log("Restart");
         StartCoroutine(DelayRestart());

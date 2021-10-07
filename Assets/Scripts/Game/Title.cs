@@ -9,14 +9,15 @@ public class Title : MonoBehaviour
 
     void Start()
     {
-        SoundManager.instance.PlayBGM((int)SoundManager.IndexBGM.Title);
+        SoundManager.instance.PlayBGM(SoundManager.BGM.Title);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            fade.FadeIn(1.5f, () => SceneManager.LoadScene("Main"));  // フェードイン演出
+            SoundManager.instance.PlaySE(SoundManager.SE.GameStart);
+            fade.FadeIn(2.5f, () => SceneManager.LoadScene("Main"));  // フェードイン演出
         }
     }
 }
