@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6798332037052205240}
   - component: {fileID: 1934514840026074324}
   - component: {fileID: 2658946923493383236}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DamageCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -2030956379
   m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!114 &6798332037052205240
@@ -83,7 +83,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &1934514840026074324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 5986678664293092700}
   - component: {fileID: 7134735330648234388}
   - component: {fileID: 2446553424981749103}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DamageText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
