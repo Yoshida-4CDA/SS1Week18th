@@ -44,7 +44,7 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        fade.FadeOut(1f);   // フェードアウト演出
+        fade.FadeOut(2f);   // フェードアウト演出
 
         inventory = GameData.instance.GetComponent<Inventory>();
         dungeonGenerator.Init();
