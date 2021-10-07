@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
 
     // 目的地
     ObjectPosition objectPositionTool;
+    Animator animator;
+
 
     public PlayerStatus Status { get => status; }
     public bool IsMoving { get => isMoving; }
@@ -37,6 +39,7 @@ public class Player : MonoBehaviour
         status.levelUPExp = GameData.instance.PlayerStatus.levelUPExp;
         objectPositionTool = GetComponent<ObjectPosition>();
         objectPositionTool.nextMovePosition = objectPositionTool.Grid;
+        animator = GetComponentInChildren<Animator>();
         // Debug.Log($"PlayerのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
     }
 
@@ -48,15 +51,6 @@ public class Player : MonoBehaviour
         if (axisX != 0)
         {
             axisY = 0;
-
-            if (axisX < 0)
-            {
-                transform.localScale = new Vector3(1, 1, 1);
-            }
-            else if (axisX > 0)
-            {
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
         }
         else if (axisY != 0)
         {
@@ -68,13 +62,26 @@ public class Player : MonoBehaviour
             objectPositionTool.nextMovePosition = objectPositionTool.Grid + new Vector2Int(axisX, -axisY);
             // 移動先
             ATMove(axisX, axisY);
+            animator.SetFloat("InputX", axisX);
+            animator.SetFloat("InputY", axisY);
         }
+    }
+
+
+    void LateUpdate()
+    {
+        Vector2 input = Vector2.zero;
+        input.x = Input.GetAxisRaw("Horizontal");
+        input.y = Input.GetAxisRaw("Vertical");
+
+        animator.SetFloat("Speed", input.sqrMagnitude);
     }
 
     public void ATMove(int x, int y)
     {
         // Move関数を呼んでRayを飛ばす
         bool canMove = Move(x, y);
+        // bool isAttack = false;
 
 
         Enemy hitComponent = null;
@@ -84,6 +91,7 @@ public class Player : MonoBehaviour
         }
         if (!canMove && hitComponent != null)
         {
+            // isAttack = true;
             OnCantMove(hitComponent);
             objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         }
@@ -91,10 +99,19 @@ public class Player : MonoBehaviour
         {
             objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         }
+
         // プレイヤーのターン(攻撃)終了
         CheckHP();
         OnPlayerTurnEnd();
     }
+
+    //// 攻撃中ってのを取得した方がいい
+    //IEnumerator WaitAttackAnimation()
+    //{
+    //    yield return new WaitForSeconds(0.5f);
+    //    CheckHP();
+    //    OnPlayerTurnEnd();
+    //}
 
     public bool Move(int x, int y)
     {
@@ -131,6 +148,7 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Playerの攻撃");
         enemy.EnemyDamage(status.at);
+        animator.SetTrigger("Attack");
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -154,6 +172,7 @@ public class Player : MonoBehaviour
         SpawnCanvasPrefab(transform.position, damage);
 
         CheckHP();
+        animator.SetTrigger("Damage");
     }
 
     void SpawnCanvasPrefab(Vector2 position, int damage)
@@ -173,6 +192,7 @@ public class Player : MonoBehaviour
     {
         if (status.hp <= 0)
         {
+            animator.SetTrigger("GameOver");
             OnGameOver();
         }
     }
