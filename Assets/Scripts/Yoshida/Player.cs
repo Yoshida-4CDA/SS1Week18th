@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
         status.exp = GameData.instance.PlayerStatus.exp;
         status.currentStage = GameData.instance.PlayerStatus.currentStage;
         status.levelUPExp = GameData.instance.PlayerStatus.levelUPExp;
+        status.sleepPoint = GameData.instance.PlayerStatus.sleepPoint;
         objectPositionTool = GetComponent<ObjectPosition>();
         objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         animator = GetComponentInChildren<Animator>();
@@ -46,6 +47,22 @@ public class Player : MonoBehaviour
 
     public void HandleUpdate()
     {
+        if (status.sleepPoint <= 0)
+        {
+            MessageUI.instance.SetMessage($"<color=#E74B68>安眠度が0になった!!!\nHPが減ってしまうよ!!!</color>");
+            status.hp--;
+            if (status.hp <= 0)
+            {
+                status.hp = 0;
+            }
+        }
+
+        status.sleepPoint--;
+        if (status.sleepPoint <= 0)
+        {
+            status.sleepPoint = 0;
+        }
+
         axisX = (int)Input.GetAxisRaw("Horizontal");
         axisY = (int)Input.GetAxisRaw("Vertical");
 
@@ -236,6 +253,12 @@ public class Player : MonoBehaviour
         SoundManager.instance.PlaySE(SoundManager.SE.ATUP);
         status.at += amount;
     }
+    public void HealSLP(int amount)
+    {
+        SoundManager.instance.PlaySE(SoundManager.SE.ATUP);
+        status.sleepPoint = Mathf.Min(status.sleepPoint + amount, 100);
+    }
+
     public void Heal(int amount)
     {
         status.hp += amount;

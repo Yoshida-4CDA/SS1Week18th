@@ -15,6 +15,7 @@ public class GameData : MonoBehaviour
         {
             instance = this;
             playerStatus = ParamsSO.Entity.initPlayerStatus;
+            playerStatus.sleepPoint = 100;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -34,6 +35,6 @@ public class PlayerStatus
     public int exp;
     public int currentStage;
     public int levelUPExp;   // この経験値以上になったらレベルアップ
-
+    public int sleepPoint = 100;
     public bool IsLevelUP { get => exp >= levelUPExp; }
 }

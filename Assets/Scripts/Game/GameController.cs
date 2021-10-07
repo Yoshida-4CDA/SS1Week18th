@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
         Busy,
         CheckLevelUP,
         StatusUPSelection,
+        StatusUP,
         GameOver,
         Goal,
         End,
@@ -55,6 +56,7 @@ public class GameController : MonoBehaviour
         player = dungeonGenerator.Player.GetComponent<Player>();
         player.Init();
         cameraManager.SetTarget(player.transform);
+        playerStatusUI.SetData(player.Status);
 
         enemies = new List<Enemy>();
         foreach (ObjectPosition enemyObj in dungeonGenerator.Enemys)
@@ -151,7 +153,7 @@ public class GameController : MonoBehaviour
         // TODOテスト用
         if (Input.GetKeyDown(KeyCode.O))
         {
-            OpenStatusSelectionUI();
+            // OpenStatusSelectionUI();
         }
     }
 
@@ -240,8 +242,6 @@ public class GameController : MonoBehaviour
 
     void PlayerEnd()
     {
-        // Debug.Log("PlayerEnd");
-        // GameState.BusyだったらBusyのまま, そうじゃないなら敵のターン
         switch (state)
         {
             case GameState.Busy:
@@ -381,7 +381,6 @@ public class GameController : MonoBehaviour
             }
             selectedItem.Use(player);
             inventory.List.Remove(selectedItem);
-            playerStatusUI.SetData(player.Status);
             StartCoroutine(UseItem());
             CloseInventory();
         }
@@ -442,8 +441,17 @@ public class GameController : MonoBehaviour
         {
             StatusUPCard selectedCard = statusUPSelection.StatusUPCards[currentStatusUPIndex];
             selectedCard.UseCard(player);
+            playerStatusUI.SetData(player.Status);
             CloseStatusSelectionUI();
+            StartCoroutine(DelaySelection());
         }
+    }
+
+    IEnumerator DelaySelection()
+    {
+        state = GameState.StatusUP;
+        yield return new WaitForSeconds(0.75f);
+        state = GameState.EnemyTurn;
     }
 
     void OpenStatusSelectionUI()
@@ -457,7 +465,6 @@ public class GameController : MonoBehaviour
     }
     void CloseStatusSelectionUI()
     {
-        state = GameState.EnemyTurn;
         statusUPSelection.gameObject.SetActive(false);
     }
 

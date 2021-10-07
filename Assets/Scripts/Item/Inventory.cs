@@ -33,6 +33,9 @@ public class Item
             case ItemType.HPHeal:
                 player.Heal(_base.Amount);
                 break;
+            case ItemType.SleepPointHeal:
+                player.HealSLP(_base.Amount);
+                break;
         }
     }
 }

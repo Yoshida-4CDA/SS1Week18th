@@ -20,6 +20,7 @@ MonoBehaviour:
     exp: 0
     currentStage: 1
     levelUPExp: 10
+    sleepPoint: 100
   initEnemyStatusList:
   - level: 1
     name: "\u30D0\u30AF"

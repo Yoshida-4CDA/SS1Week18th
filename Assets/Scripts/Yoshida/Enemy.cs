@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour
     public int HP { get => status.hp; }
     public int Exp { get => status.exp; }
     public string Name { get => status.name; }
+    [SerializeField]
+    Texture[] sprites;
+
 
     ObjectPosition objectPositionTool;
 
@@ -27,7 +30,10 @@ public class Enemy : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         objectPositionTool = GetComponent<ObjectPosition>();
-        status.Set(ParamsSO.Entity.initEnemyStatusList[0]);
+        int stage = GameData.instance.PlayerStatus.currentStage-1;
+        status.Set(ParamsSO.Entity.initEnemyStatusList[0], stage);
+        OverrideSprite overrideSprite = GetComponentInChildren<OverrideSprite>();
+        overrideSprite.overrideTexture = sprites[stage % 4];
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
         Debug.Log($"EnemyのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
         objectPositionTool.nextMovePosition = objectPositionTool.Grid;
@@ -205,12 +211,12 @@ public class EnemyStatus
     public int at; 
     public int exp;
 
-    public void Set(EnemyStatus status)
+    public void Set(EnemyStatus status, int stage)
     {
-        level = status.level;
+        level = (stage / 4) + 1;
         name = status.name;
-        hp = status.hp;
-        at = status.at; 
+        hp = status.hp + (stage / 4) * 5;
+        at = status.at + (stage / 4) * 5; 
         exp = status.at;
     }
 }
