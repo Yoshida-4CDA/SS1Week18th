@@ -30,24 +30,31 @@ public class Enemy : MonoBehaviour
         target = GameObject.FindGameObjectWithTag("Player").transform;   // プレイヤーの位置情報を取得
         Debug.Log($"EnemyのHP：{status.hp}　AT：{status.at}　経験値：{status.exp}");
         objectPositionTool.nextMovePosition = objectPositionTool.Grid;
-
     }
 
-    // TODO:Enemyの移動修正
-    /*
-     PlayerとEnemyが・・・
+    public bool CheckAttack()
+    {
+        Vector2Int nextDirection = default;
+        if (Vector2.Distance(target.position, transform.position) <= 5f)
+        {
+            nextDirection = objectPositionTool.GetAStarNextDirection();
+        }
+        int x = nextDirection.x;
+        int y = -nextDirection.y;
 
-        ＊同じX軸にいるなら => 上下どちらかにY軸を動かす
-        ＊違うX軸にいるなら => 左右どちらかにX軸を動かす
+        // Move関数を呼んでRayを飛ばす
+        bool canMove = Move(x, y);
 
-        ＊同じY軸にいるなら => 左右どちらかにX軸を動かす
-        ＊違うY軸にいるなら => 上下どちらかにY軸を動かす
 
-        ということは・・・
+        // 重なりがあるか?Playerか？
+        ObjectPosition hitComponent = objectPositionTool.IsOverlapPointNextMove();
+        if (!canMove && hitComponent != null && hitComponent.GetComponent<Player>())
+        {
+            return true;
+        }
+        return false;
+    }
 
-            ＊X軸を動かすとき => 違うX軸 or 同じY軸
-            ＊Y軸を動かすとき => 同じX軸 or 違うY軸
-     */
     public bool MoveEnemy()
     {
         //int xDir = 0;
@@ -124,6 +131,8 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
+
+
     IEnumerator Movement(Vector3 endPos)
     {
         isMoving = true;
@@ -145,13 +154,16 @@ public class Enemy : MonoBehaviour
         transform.position = endPos;
 
         isMoving = false;
+        objectPositionTool.nextMovePosition = objectPositionTool.Grid;
     }
 
     void OnCantMove(Player player)
     {
-        animator.SetTrigger("Attack");
-        Debug.Log("Enemyの攻撃");
-        player.PlayerDamage(status.at);
+        if (player.Status.hp > 0)
+        {
+            animator.SetTrigger("Attack");
+            player.PlayerDamage(status.at);
+        }
     }
 
     public void EnemyDamage(int damage)
@@ -164,10 +176,15 @@ public class Enemy : MonoBehaviour
 
         if (status.hp <= 0)
         {
-            Debug.Log("Enemyを倒した");
+            animator.SetTrigger("GameOver");
             OnDestroyEnemy?.Invoke(this);
-            gameObject.SetActive(false);
+            StartCoroutine(DelayDestroy());
         }
+    }
+    IEnumerator DelayDestroy()
+    {
+        yield return new WaitForSeconds(0.4f);
+        gameObject.SetActive(false);
     }
 
     void SpawnCanvasPrefab(Vector2 position, int damage)

@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
 
     PlayerStatus status = new PlayerStatus();
 
+    public UnityAction OnPlayerAttack;
     public UnityAction OnPlayerTurnEnd;
     public UnityAction OnGameOver;
     public UnityAction OnGoal;
@@ -81,7 +82,7 @@ public class Player : MonoBehaviour
     {
         // Move関数を呼んでRayを飛ばす
         bool canMove = Move(x, y);
-        // bool isAttack = false;
+        bool isAttack = false;
 
 
         Enemy hitComponent = null;
@@ -91,7 +92,8 @@ public class Player : MonoBehaviour
         }
         if (!canMove && hitComponent != null)
         {
-            // isAttack = true;
+            isAttack = true;
+            // 攻撃する
             OnCantMove(hitComponent);
             objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         }
@@ -100,18 +102,26 @@ public class Player : MonoBehaviour
             objectPositionTool.nextMovePosition = objectPositionTool.Grid;
         }
 
-        // プレイヤーのターン(攻撃)終了
-        CheckHP();
-        OnPlayerTurnEnd();
+        if (isAttack)
+        {
+            // プレイヤーのターン(攻撃)終了
+            CheckHP();
+            StartCoroutine(WaitAttackAnimation());
+        }
+        else
+        {
+            OnPlayerTurnEnd();
+        }
     }
 
     //// 攻撃中ってのを取得した方がいい
-    //IEnumerator WaitAttackAnimation()
-    //{
-    //    yield return new WaitForSeconds(0.5f);
-    //    CheckHP();
-    //    OnPlayerTurnEnd();
-    //}
+    IEnumerator WaitAttackAnimation()
+    {
+        OnPlayerAttack();
+        yield return new WaitForSeconds(0.5f);
+        CheckHP();
+        OnPlayerTurnEnd();
+    }
 
     public bool Move(int x, int y)
     {
@@ -142,6 +152,7 @@ public class Player : MonoBehaviour
         transform.position = targetPos;
         isMoving = false;
         CheckHP();
+        objectPositionTool.nextMovePosition = objectPositionTool.Grid;
     }
 
     void OnCantMove(Enemy enemy)

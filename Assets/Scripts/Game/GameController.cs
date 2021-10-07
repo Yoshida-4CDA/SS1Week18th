@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour
     enum GameState
     {
         Idle,
+        PlayerAttack,
         PlayerTurn,
         OpenInventory,
         UseItem,
@@ -66,6 +67,7 @@ public class GameController : MonoBehaviour
         player.OnGameOver += GameOver;
         player.OnGoal += Restart;
         player.OnItem += OnItem;
+        player.OnPlayerAttack += OnPlayerAttack;
 
 
         state = GameState.Idle;
@@ -219,6 +221,11 @@ public class GameController : MonoBehaviour
         }
     }
 
+    void OnPlayerAttack()
+    {
+        state = GameState.PlayerAttack;
+    }
+
     void PlayerEnd()
     {
         // Debug.Log("PlayerEnd");
@@ -241,26 +248,30 @@ public class GameController : MonoBehaviour
         player.AddExp(enemy.Exp);
     }
 
-    // TODO:Playerと重なるバグ修正
+    // 移動するやつが全部移動してから, 攻撃する
+
     IEnumerator MoveEnemies()
     {
-        // yield return new WaitForSeconds(0.1f);
-
         if (enemies.Count == 0)
         {
-            // yield return new WaitForSeconds(0.1f);
         }
-
         for (int i = 0; i < enemies.Count; i++)
         {
             if (!enemies[i].gameObject.activeSelf)
             {
                 continue;
             }
+            if (enemies[i].CheckAttack())
+            {
+                while (IsMovingPlayer())
+                {
+                    yield return null;
+                }
+            }
             bool attacked = enemies[i].MoveEnemy();
             if (attacked)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.5f);
             }
             playerStatusUI.SetData(player.Status);
         }
@@ -288,11 +299,16 @@ public class GameController : MonoBehaviour
                 return true;
             }
         }
-        if (player.IsMoving)
+        if (IsMovingPlayer())
         {
             return true;
         }
         return false;
+    }
+
+    bool IsMovingPlayer()
+    {
+        return player.IsMoving;
     }
 
     // インベントリを開いてる時の処理
