@@ -238,7 +238,6 @@ public class Player : MonoBehaviour
     }
     public void Heal(int amount)
     {
-        SoundManager.instance.PlaySE(SoundManager.SE.Heal);
         status.hp += amount;
         status.hp = Mathf.Clamp(status.hp, 0, status.maxHP);
     }
