@@ -8,6 +8,8 @@ public class GoalMessage : MonoBehaviour
     [SerializeField] Text message;
     [SerializeField] HilightText[] hilightTexts;
 
+    bool IsOpenedRankingBoard;
+
     private void Awake()
     {
         message = GetComponentInChildren<Text>();
@@ -28,11 +30,17 @@ public class GoalMessage : MonoBehaviour
         gameObject.SetActive(true);
         this.message.text = $"GAME OVER\n\n 合計睡眠時間... {time} 時間";
         naichilab.RankingLoader.Instance.IsOpeningRanking = true;
-        StartCoroutine(ShowRankingBoard(time));
+
+        if (!IsOpenedRankingBoard)
+        {
+            StartCoroutine(ShowRankingBoard(time));
+        }
     }
 
     IEnumerator ShowRankingBoard(int time)
     {
+        IsOpenedRankingBoard = true;
+
         yield return new WaitForSeconds(1f);
         naichilab.RankingLoader.Instance.SendScoreAndShowRanking(time);
     }

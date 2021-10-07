@@ -11,7 +11,7 @@ public class Title : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            fade.FadeIn(1f, () => SceneManager.LoadScene("Main"));  // フェードイン演出
+            fade.FadeIn(1.5f, () => SceneManager.LoadScene("Main"));  // フェードイン演出
         }
     }
 }
