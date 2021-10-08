@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initPlayerStatus:
     level: 1
-    hp: 100
-    maxHP: 100
+    hp: 80
+    maxHP: 80
     at: 10
     exp: 0
     currentStage: 1
@@ -35,6 +35,6 @@ MonoBehaviour:
   statusUPAddAT: 5
   enemyLevelUPAddHP: 2
   enemyLevelUPAddAT: 2
-  rateHerb: 4
-  rateHerbTea: 4
-  rateEmpty: 2
+  rateHerb: 2
+  rateHerbTea: 2
+  rateEmpty: 3

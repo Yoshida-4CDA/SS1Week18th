@@ -47,7 +47,6 @@ public class GameController : MonoBehaviour
     void Start()
     {
         messageUI.SetMessage($"ここはある人の夢の世界\n<color=#FFAC00>下に向かうほど長く眠れる</color>と言われている");
-        SoundManager.instance.PlayBGM(SoundManager.BGM.Main);
 
         fade.FadeOut(1.5f);   // フェードアウト演出
 
@@ -77,6 +76,21 @@ public class GameController : MonoBehaviour
         statusUPSelection.gameObject.SetActive(false);
         inventoryUI.gameObject.SetActive(false);
         playerStatusUI.SetData(player.Status);
+        if ((player.Status.currentStage - 1) % 4 == 3)
+        {
+            messageUI.SetMessage($"<color=#FFAC00>悪夢</color>が迫っている\n早く逃げた方がいい");
+            SoundManager.instance.PlayBGM(SoundManager.BGM.Nightmare);
+        }
+        else if (player.Status.currentStage == 1)
+        {
+            messageUI.SetMessage($"ここはある人の夢の世界\n<color=#FFAC00>下に向かうほど長く眠れる</color>と言われている");
+            SoundManager.instance.PlayBGM(SoundManager.BGM.Main);
+        }
+        else
+        {
+            messageUI.SetMessage($"もっと深く...");
+            SoundManager.instance.PlayBGM(SoundManager.BGM.Main);
+        }
     }
 
     // ゲームの状態に応じて、入力処理をかえる
@@ -146,7 +160,7 @@ public class GameController : MonoBehaviour
             state = GameState.PlayerTurn;
         }
 
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Z))
         {
             OpenInventory();
         }
@@ -160,6 +174,7 @@ public class GameController : MonoBehaviour
     void HandlePlayerTurn()
     {
         player.HandleUpdate();
+        playerStatusUI.SetData(player.Status);
     }
 
     void HandleUpdateCheckLevelUP()
@@ -396,6 +411,7 @@ public class GameController : MonoBehaviour
 
     IEnumerator UseItem()
     {
+        state = GameState.UseItem;
         yield return new WaitForSeconds(0.75f);
         state = GameState.EnemyTurn;
     }

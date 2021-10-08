@@ -49,6 +49,7 @@ MonoBehaviour:
   audioClipBGM:
   - {fileID: 8300000, guid: e776ce3bc5960724caa7569575a733a6, type: 3}
   - {fileID: 8300000, guid: 3d6aaa3efa7a58f499756be97a89e809, type: 3}
+  - {fileID: 8300000, guid: 21400dec5dabe4c51b97abb6c32cd852, type: 3}
   audioSourceSE: {fileID: 3130857009433632455}
   audioClipSE:
   - {fileID: 8300000, guid: 1d84eceed5ef7a045b391da027289dea, type: 3}

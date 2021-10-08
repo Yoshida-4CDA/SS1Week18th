@@ -219,9 +219,10 @@ public class EnemyStatus
         exp = status.exp;
         if (stage%4 == 3)
         {
-            hp = status.hp + stage * ParamsSO.Entity.enemyLevelUPAddHP * 2;
-            at = status.at + stage * ParamsSO.Entity.enemyLevelUPAddAT * 2;
-            exp = 10;
+            name = "悪夢";
+            hp = status.hp + stage * ParamsSO.Entity.enemyLevelUPAddHP * 2 + 5;
+            at = status.at + stage * ParamsSO.Entity.enemyLevelUPAddAT * 2 + 5;
+            exp = 5;
         }
     }
 }

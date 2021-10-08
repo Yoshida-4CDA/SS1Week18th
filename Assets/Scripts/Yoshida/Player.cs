@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
             }
         }
         tmpSLP++;
-        if (tmpSLP % 2 == 0)
+        if (tmpSLP % 3 == 0)
         {
             status.sleepPoint--;
         }
