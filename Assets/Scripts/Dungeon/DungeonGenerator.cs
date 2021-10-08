@@ -14,14 +14,14 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField] Canvas canvas;
 
 
-    const int WIDTH = 36;
-    const int HEIGHT = 20;
+    const int WIDTH = 36;// 36;
+    const int HEIGHT = 30;// 20;
 
     const int OUTER_MERGIN = 3;  // 区画と部屋の余白サイズ
     const int POS_MERGIN = 2;    // 部屋配置の余白サイズ
 
-    const int MIN_ROOM = 3;     // 最小の部屋サイズ    
-    const int MAX_ROOM = 10;    // 最大の部屋サイズ
+    const int MIN_ROOM = 4;     // 最小の部屋サイズ    
+    const int MAX_ROOM = 8;    // 最大の部屋サイズ
 
     const int CHIP_ROAD = 0;    // 通路
     const int CHIP_WALL = 1;    // 壁

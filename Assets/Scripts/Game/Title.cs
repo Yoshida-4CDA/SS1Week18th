@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class Title : MonoBehaviour
 {
     [SerializeField] Fade fade;
-
+    bool onStart;
     void Start()
     {
         SoundManager.instance.PlayBGM(SoundManager.BGM.Title);
@@ -14,10 +14,15 @@ public class Title : MonoBehaviour
 
     void Update()
     {
+        if (onStart)
+        {
+            return;
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            onStart = true;
             SoundManager.instance.PlaySE(SoundManager.SE.GameStart);
-            fade.FadeIn(2.5f, () => SceneManager.LoadScene("Main"));  // フェードイン演出
+            fade.FadeIn(2.5f, () => SceneManager.LoadScene("Main"));  // ?t?F?[?h?C?????o
         }
     }
 }

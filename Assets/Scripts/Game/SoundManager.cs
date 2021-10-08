@@ -9,6 +9,7 @@ public class SoundManager : MonoBehaviour
     {
         Title,
         Main,
+        Nightmare,
     }
 
     // SEを列挙
@@ -52,7 +53,7 @@ public class SoundManager : MonoBehaviour
     // SE
     [SerializeField] AudioSource audioSourceSE;
     [SerializeField] AudioClip[] audioClipSE;
-
+    int currentBGM;
     public void StopBGM()
     {
         audioSourceBGM.Stop();
@@ -60,8 +61,14 @@ public class SoundManager : MonoBehaviour
 
     public void PlayBGM(BGM bgm)
     {
-        StopBGM();
         int index = (int)bgm;
+
+        if (currentBGM == index && audioSourceBGM.isPlaying)
+        {
+            return;
+        }
+        currentBGM = index;
+        StopBGM();
         audioSourceBGM.clip = audioClipBGM[index];
         audioSourceBGM.Play();
     }
