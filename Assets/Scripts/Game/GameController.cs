@@ -229,7 +229,7 @@ public class GameController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             currentResult--;
-            if (currentItemSlot >= min)
+            if (currentResult >= min)
             {
                 SoundManager.instance.PlaySE(SoundManager.SE.Cursor);
             }

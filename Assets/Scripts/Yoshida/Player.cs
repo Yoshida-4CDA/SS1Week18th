@@ -264,7 +264,7 @@ public class Player : MonoBehaviour
     }
     public void HealSLP(int amount)
     {
-        SoundManager.instance.PlaySE(SoundManager.SE.ATUP);
+        SoundManager.instance.PlaySE(SoundManager.SE.SleepPointHeal);
         status.sleepPoint = Mathf.Min(status.sleepPoint + amount, 100);
     }
 
